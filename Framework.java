@@ -4,8 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it and draw it on the screen.
@@ -49,7 +56,7 @@ public class Framework extends Canvas {
     /**
      * Possible states of the game
      */
-    public static enum GameState{STARTING, VISUALIZING, GAME_CONTENT_LOADING, MAIN_MENU, OPTIONS,RULES, PLAYING, GAMEOVER, DESTROYED}
+    public static enum GameState{STARTING, VISUALIZING, GAME_CONTENT_LOADING, MAIN_MENU, OPTIONS,RULES, PLAYING, GAMEOVER, DESTROYED,PAUSE}
     /**
      * Current state of the game
      */
@@ -61,6 +68,12 @@ public class Framework extends Canvas {
     private long gameTime;
     // It is used for calculating elapsed time.
     private long lastTime;
+    //Img background menu
+    private BufferedImage bg_menu;
+    private BufferedImage btn_start;
+    private BufferedImage btn_rules;
+    private BufferedImage btn_options;
+    private BufferedImage btn_exit;
     
     // The actual game
     private Game game;
@@ -98,6 +111,26 @@ public class Framework extends Canvas {
      */
     private void LoadContent()
     {
+        try
+        {
+            URL menuImgUrl = this.getClass().getResource("/testsquares2/resources/images/bg_menu.jpg");
+            bg_menu = ImageIO.read(menuImgUrl);
+            
+            URL startImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_start.png");
+            btn_start = ImageIO.read(startImgUrl);
+            
+            URL rulesImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_rules.png");
+            btn_rules = ImageIO.read(rulesImgUrl);
+            
+            URL optionsImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_options.png");
+            btn_options = ImageIO.read(optionsImgUrl);
+            
+            URL exitImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_exit.png");
+            btn_exit = ImageIO.read(exitImgUrl);
+        }
+        catch (IOException ex) {
+            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //Load anh dan gian + Tri Tue nhan tao
         //Load am thanh
     }
@@ -131,7 +164,7 @@ public class Framework extends Canvas {
                     //...game.over();
                 break;
                 case MAIN_MENU:
-                    // bat dau, luat choi, Tuy chon, Thoat
+                    gameMenu();
                 break;
                 case OPTIONS:
                     //Tuy chinh am thanh
@@ -203,7 +236,11 @@ public class Framework extends Canvas {
                 //Draw Ket qua
             break;
             case MAIN_MENU:
-                //Draw menu
+                g2d.drawImage(bg_menu, 0, 0,frameWidth,frameHeight,null);
+                g2d.drawImage(btn_start, frameWidth/2, frameHeight/3 + 70, null);
+                g2d.drawImage(btn_rules, frameWidth/2 -17, frameHeight/3 + 165, null);
+                g2d.drawImage(btn_options, frameWidth/2 -13, frameHeight/3 + 260, null);
+                g2d.drawImage(btn_exit, frameWidth/2 + 13, frameHeight/3 + 355, null);               
             break;
             case OPTIONS:
                 //Sound UI
@@ -217,6 +254,24 @@ public class Framework extends Canvas {
         }
     }
     
+    /**
+     * Game Menu
+     */
+    private void gameMenu(){
+        if(Canvas.mouseButtonState(MouseEvent.BUTTON1)){
+            if(new Rectangle(frameWidth/2, frameHeight/3 + 70,btn_start.getWidth(),btn_start.getHeight()).contains(mousePosition()))
+                newGame();
+        
+            if(new Rectangle(frameWidth/2 -17, frameHeight/3 + 165,btn_rules.getWidth(),btn_rules.getHeight()).contains(mousePosition()))
+                gameState = GameState.RULES;
+            
+            if(new Rectangle(frameWidth/2 -13, frameHeight/3 + 260,btn_options.getWidth(),btn_options.getHeight()).contains(mousePosition()))
+                gameState = GameState.OPTIONS;
+            
+            if(new Rectangle(frameWidth/2 + 13, frameHeight/3 + 355,btn_exit.getWidth(),btn_exit.getHeight()).contains(mousePosition()))
+                System.exit(0);
+        }
+    }
     
     /**
      * Starts new game.
@@ -278,7 +333,28 @@ public class Framework extends Canvas {
     @Override
     public void keyReleasedFramework(KeyEvent e)
     {
-        
+        switch (gameState)
+        {
+            case GAMEOVER:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    System.exit(0);
+                else if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
+                    restartGame();
+            break;
+            case PLAYING:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.PAUSE;
+            break;
+            case MAIN_MENU:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    System.exit(0);
+            break;
+            case RULES:
+            case OPTIONS:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.MAIN_MENU;
+            break;
+        }
     }
     
     /**
