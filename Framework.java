@@ -56,7 +56,7 @@ public class Framework extends Canvas {
     /**
      * Possible states of the game
      */
-    public static enum GameState{STARTING, VISUALIZING, GAME_CONTENT_LOADING, MAIN_MENU, OPTIONS,RULES, PLAYING, GAMEOVER, DESTROYED,PAUSE}
+    public static enum GameState{STARTING, VISUALIZING,INTRODUCE, GAME_CONTENT_LOADING, MAIN_MENU, OPTIONS,RULES, PLAYING, GAMEOVER, DESTROYED,PAUSE}
     /**
      * Current state of the game
      */
@@ -69,6 +69,7 @@ public class Framework extends Canvas {
     // It is used for calculating elapsed time.
     private long lastTime;
     //Img background menu
+    private BufferedImage bg_introduce;
     private BufferedImage bg_menu;
     private BufferedImage btn_start;
     private BufferedImage btn_rules;
@@ -113,6 +114,9 @@ public class Framework extends Canvas {
     {
         try
         {
+            URL introImgUrl = this.getClass().getResource("/testsquares2/resources/images/introduce.jpg");
+            bg_introduce = ImageIO.read(introImgUrl);
+            
             URL menuImgUrl = this.getClass().getResource("/testsquares2/resources/images/bg_menu.jpg");
             bg_menu = ImageIO.read(menuImgUrl);
             
@@ -175,14 +179,25 @@ public class Framework extends Canvas {
                 case GAME_CONTENT_LOADING:
                     //...
                 break;
+                case INTRODUCE:
+                    {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    gameState = GameState.MAIN_MENU;
+                break;
                 case STARTING:
                     // Sets variables and objects.
                     Initialize();
                     // Load files - images, sounds, ...
                     LoadContent();
-
+                    
+                    
                     // When all things that are called above finished, we change game status to main menu.
-                    gameState = GameState.MAIN_MENU;
+                    gameState = GameState.INTRODUCE;
                 break;
                 case VISUALIZING:
                     
@@ -247,6 +262,9 @@ public class Framework extends Canvas {
             break;
             case RULES:
                 //Luật chơi
+            break;
+            case INTRODUCE:
+                g2d.drawImage(bg_introduce, 0, 0, null);
             break;
             case GAME_CONTENT_LOADING:
                 //...
