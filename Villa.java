@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import javafx.scene.shape.Arc;
 
 /**
  *
@@ -20,28 +21,50 @@ public class Villa extends House {
     int diemNhaQuan;
     public boolean coQuan;
     Shape shape = new Rectangle2D.Double(x, y, 65, 100);
-    public void setQuanID(int x){
-        this.quanID = x;
+    
+    public Villa(){
+    
+    }
+    
+    public void setVilla(int ID,int x,int y,boolean coQuan){
+        this.quanID = ID;
+        this.x = x;
+        this.y = y;
+        this.coQuan = coQuan;
+        
+    }
+    
+    
+    public void setQuanID(int ID){
+        this.quanID = ID;
     }
     public int getDiemSo(){
         if (coQuan) return danSo+5;
         else return danSo;
     }
-    public void paint(Graphics2D g){
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setColor(Color.blue);
-        //Vẽ Nhà Dân
-        g2d.draw(shape);           
-        //Vẽ Dân trong nhà
+    public void paint(Graphics2D g2d){
+        g2d.setColor(Color.red);
+        //Vẽ Nhà Quan
+        if(quanID ==5){
+            g2d.drawArc(x, y, 200, 200, -90, 180);
+        }
+        else g2d.drawArc(x,y,200,200,90,180);
+        
         g2d.setColor(Color.gray);
+        
+        //Toa do Quan
+        if(quanID == 0)m=x+50;
+        else m=x+140;
+        n=y+80;
+        
+        //Vẽ Dân trong nhà
         for (int i=1;i<=danSo;i++){
             g2d.fillOval(m, n, 10, 10);
-            m+=arm[i];
-            n+=arn[i];
         }
+        //Ve Quan
         if (coQuan) {
-            g2d.setColor(Color.green);
-            g2d.fillOval(m, n+30, 15, 18);
+            g2d.setColor(Color.gray);
+            g2d.fillOval(m, n, 30, 44);
         }
     }
     

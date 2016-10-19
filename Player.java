@@ -2,6 +2,8 @@
 package testSQuares2;
 
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 /**
@@ -12,7 +14,7 @@ import javax.swing.JPanel;
 public class Player extends JPanel {
     private Game game;
     private Board board;            //Sân chơi hiện tại của game
-    private House[] playerHouses;  //Địa chỉ các nhà dân mà mình quản lý (1,2,3,4,5) ||  (10,9,8,7,6)
+    private House[] houses;  //Địa chỉ các nhà dân mà mình quản lý (1,2,3,4,5) ||  (10,9,8,7,6)
     static String playerName; 
     protected int currentScore;    //Điểm của người chơi = số dân thu về
     protected int direction;        // Hướng đi đã chọn
@@ -32,9 +34,10 @@ public class Player extends JPanel {
         currentScore = 0;
         direction = 0;     
         chosenHouse = 0;
+        
     }
     
-    public void turn() {
+    public void turn(Point mousePosition) {
         /* Click chuột vào 1 nhà phía mình đưa vào biến chosenHouse. 
         * Hiện ra 2 nút <-  và -> ở phía trên
         * bấm phím VK_LEFT or VK_RIGHT đưa vào biến direction
@@ -47,6 +50,14 @@ public class Player extends JPanel {
         if (playerSide = 1) game.turnToken =3
         if (playerSide = 2) game.turnToken =4
         */
+        
+        if(Canvas.mouseButtonState(1)){
+            
+            
+            for (int i=1;i<=10;i++)
+            if(board.houses[i].shape.contains(mousePosition)) board.houses[i].chosen=true;
+        
+        }
 
     }
    

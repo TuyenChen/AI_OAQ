@@ -15,46 +15,37 @@ import java.awt.geom.Rectangle2D;
  * @author VPC
  */
 class House {
-    private int houseID;
-    protected int danSo;
-    protected int x,y;        //Tọa độ nhà dân
-    public Shape shape;
-    public Shape chosenShape = new Rectangle2D.Double(x+3, y+3, 44, 44);
-    boolean chosen = false; 
-    int m = x+10;      //Tọa độ của dân trong nhà
-    int n = y+10;
+    public int x,y;
+    public int houseID;
+    public int danSo;
+    boolean chosen;
+    Shape shape;
+    public Shape chosenShape ;
+    int m ;      //Tọa độ của dân trong nhà
+    int n ;
     int[] arm = {0,0,20,-20,15,0,-10};
     int[] arn = {0,0,10,10,-30,35,-10};
-    public void setHouse(int ID,int x,int y, int danSo){
-        this.danSo = danSo;
-        this.x = x;
-        this.y = y;
-        this.houseID = ID;
-        this.shape = new Rectangle2D.Double(x, y, 50, 50);
-    }
+
     public House(){
         x =0;
         y=0;
         houseID = 0;
     }
     
-    public void paint(Graphics2D g){
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setColor(Color.blue);
-        //Vẽ Nhà Dân
-        g2d.draw(shape);           
-        if(chosen) {
-            g2d.setColor(Color.pink);
-            g2d.draw(chosenShape);
-        }
-        //Vẽ Dân trong nhà
-        g2d.setColor(Color.gray);
-        for (int i=1;i<=danSo;i++){
-            g2d.fillOval(m, n, 10, 10);
-            m+=arm[i];
-            n+=arn[i];
-        }
+    
+    
+    
+    public void setHouse(int ID,int x,int y,int danSo){
+        this.x = x;
+        this.y = y;
+        this.houseID = ID;
+        this.danSo = danSo;
+        this.shape = new Rectangle2D.Double(x, y, 100, 100);
+        this.chosenShape = new Rectangle2D.Double(x+6, y+6, 88, 88);
+        this.m = x+10;
+        this.n = y+10;
     }
+    
     public void chosen(){
         chosen = true;
     }
@@ -70,5 +61,23 @@ class House {
     }
     public int getDanSo(){
         return danSo;
+    }
+    public void setDanSo(int pop){
+        this.danSo = pop;
+    }
+    public void paint(Graphics2D g2d){
+        g2d.setColor(Color.blue);
+        //Vẽ Nhà Dân màu
+        //g2d.draw(this.shape);           
+        if(chosen) {
+            g2d.setColor(Color.pink);
+            g2d.draw(chosenShape);
+        }
+        //Vẽ Dân trong nhà
+        g2d.setColor(Color.gray);
+        for (int i=1;i<=danSo;i++){
+            g2d.fillOval(m, n, 10, 10);
+            
+        }
     }
 }

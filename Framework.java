@@ -182,7 +182,7 @@ public class Framework extends Canvas {
                 case INTRODUCE:
                     {
                         try {
-                            Thread.sleep(3000);
+                            Thread.sleep(1000);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
                         }
