@@ -70,14 +70,13 @@ class House {
         //Vẽ Nhà Dân màu
         //g2d.draw(this.shape);           
         if(chosen) {
-            g2d.setColor(Color.pink);
-            g2d.draw(chosenShape);
+            g2d.drawImage(Game.houseChosen, x-100, y-100, null);
         }
         //Vẽ Dân trong nhà
         g2d.setColor(Color.gray);
-        for (int i=1;i<=danSo;i++){
-            g2d.fillOval(m, n, 10, 10);
-            
-        }
+        if ((danSo <=7) && (danSo>=1))
+            g2d.drawImage(Game.soils[danSo], x, y, null);
+        else 
+            g2d.drawImage(Game.soils[8], x, y, null);
     }
 }

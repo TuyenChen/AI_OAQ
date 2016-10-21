@@ -21,7 +21,9 @@ public class Game {
     public int turnToken;  //Dùng để chia lượt
     
     private BufferedImage background;
-    
+    public static BufferedImage[] soils; 
+    public static BufferedImage quan0,quan5;
+    public static BufferedImage houseChosen;
     public Game()
     {
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
@@ -51,6 +53,7 @@ public class Game {
          p2 = new Player(this,"Dung",2);
          trongTai = new TrongTai(this);
         turnToken =1;
+        soils = new BufferedImage[10];
     }
     
     /**
@@ -62,6 +65,39 @@ public class Game {
         {
             URL bgImgUrl = this.getClass().getResource("/testsquares2/resources/images/background.jpg");
             background = ImageIO.read(bgImgUrl);
+            
+            URL quan0ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan0.png");
+            quan0 = ImageIO.read(quan0ImgUrl);
+            
+            URL quan5ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan5.png");
+            quan5 = ImageIO.read(quan5ImgUrl);
+            
+            URL soil_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_1.png");
+            soils[1] = ImageIO.read(soil_1ImgUrl);
+            
+            URL soil_2ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_2.png");
+            soils[2] = ImageIO.read(soil_2ImgUrl);
+            
+            URL soil_3ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_3.png");
+            soils[3] = ImageIO.read(soil_3ImgUrl);
+            
+            URL soil_4ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_4.png");
+            soils[4] = ImageIO.read(soil_4ImgUrl);
+            
+            URL soil_5ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_5.png");
+            soils[5] = ImageIO.read(soil_5ImgUrl);
+            
+            URL soil_6ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_6.png");
+            soils[6] = ImageIO.read(soil_6ImgUrl);
+            
+            URL soil_7ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_7.png");
+            soils[7] = ImageIO.read(soil_7ImgUrl);
+            
+            URL soilsImgUrl = this.getClass().getResource("/testsquares2/resources/images/soils.png");
+            soils[8] = ImageIO.read(soilsImgUrl);
+            
+            URL chosenImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen.png");
+            houseChosen = ImageIO.read(chosenImgUrl);
             
         }
         catch (IOException ex) {
