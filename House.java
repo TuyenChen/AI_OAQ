@@ -21,10 +21,7 @@ class House {
     boolean chosen;
     Shape shape;
     public Shape chosenShape ;
-    int m ;      //Tọa độ của dân trong nhà
-    int n ;
-    int[] arm = {0,0,20,-20,15,0,-10};
-    int[] arn = {0,0,10,10,-30,35,-10};
+   
 
     public House(){
         x =0;
@@ -42,8 +39,7 @@ class House {
         this.danSo = danSo;
         this.shape = new Rectangle2D.Double(x, y, 100, 100);
         this.chosenShape = new Rectangle2D.Double(x+6, y+6, 88, 88);
-        this.m = x+10;
-        this.n = y+10;
+
     }
     
     public void chosen(){
@@ -70,7 +66,7 @@ class House {
         //Vẽ Nhà Dân màu
         //g2d.draw(this.shape);           
         if(chosen) {
-            g2d.drawImage(Game.houseChosen, x-100, y-100, null);
+            g2d.drawImage(Game.houseChosen, x-100, y, null);
         }
         //Vẽ Dân trong nhà
         g2d.setColor(Color.gray);

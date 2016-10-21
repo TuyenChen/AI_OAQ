@@ -24,6 +24,7 @@ public class Game {
     public static BufferedImage[] soils; 
     public static BufferedImage quan0,quan5;
     public static BufferedImage houseChosen;
+    public static BufferedImage ava_bot,ava_player;
     public Game()
     {
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
@@ -65,6 +66,12 @@ public class Game {
         {
             URL bgImgUrl = this.getClass().getResource("/testsquares2/resources/images/background.jpg");
             background = ImageIO.read(bgImgUrl);
+            
+            URL ava_botImgUrl = this.getClass().getResource("/testsquares2/resources/images/ava_bot.png");
+            ava_bot = ImageIO.read(ava_botImgUrl);
+            
+            URL ava_playerImgUrl = this.getClass().getResource("/testsquares2/resources/images/ava_player.png");
+            ava_player = ImageIO.read(ava_playerImgUrl);
             
             URL quan0ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan0.png");
             quan0 = ImageIO.read(quan0ImgUrl);
@@ -156,6 +163,8 @@ public class Game {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.drawImage(background, 0, 0, null);
+        g2d.drawImage(ava_bot, 560, 75, null);
+        g2d.drawImage(ava_player, 460, 570, null);
         board.paint(g2d);      //Vẽ lại sân sau khi xử lí
         //trongTai.paint(g2d);
     }
