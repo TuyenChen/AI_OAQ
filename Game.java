@@ -23,7 +23,7 @@ public class Game {
     
     private BufferedImage background;
     public static BufferedImage[] soils; 
-    public static BufferedImage quan0,quan5;
+    public static BufferedImage quan0,quan6;
     public static BufferedImage houseChosen;
     public static BufferedImage ava_bot,ava_player;
     public Game()
@@ -79,8 +79,8 @@ public class Game {
             URL quan0ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan0.png");
             quan0 = ImageIO.read(quan0ImgUrl);
             
-            URL quan5ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan5.png");
-            quan5 = ImageIO.read(quan5ImgUrl);
+            URL quan6ImgUrl = this.getClass().getResource("/testsquares2/resources/images/quan6.png");
+            quan6 = ImageIO.read(quan6ImgUrl);
             
             URL soil_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil_1.png");
             soils[1] = ImageIO.read(soil_1ImgUrl);

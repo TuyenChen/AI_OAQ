@@ -38,7 +38,7 @@ class TrongTai {
         danInHand = 0;
         houseShortLink = game.board.houses;
         q0ShortLink = game.board.q0;
-        q5ShortLink = game.board.q5;
+        q5ShortLink = game.board.q6;
         p1ShortLink = game.p1;
         p2ShortLink = game.p2;
     }

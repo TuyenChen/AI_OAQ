@@ -45,8 +45,8 @@ public class Villa extends House {
     public void paint(Graphics2D g2d){
         g2d.setColor(Color.red);
         //Vẽ Nhà Quan
-        if(quanID ==5){
-            g2d.drawImage(Game.quan5, x+100, y, null);
+        if(quanID ==6){
+            g2d.drawImage(Game.quan6, x+100, y, null);
         }
         else g2d.drawImage(Game.quan0, x-100, y, null);
         

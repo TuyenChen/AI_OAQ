@@ -37,15 +37,23 @@ public class Player extends JPanel {
         chosenHouse = 0;
         
     }
+    //Reset nước đi mỗi lần nhận turn
+    public void resetBuocDi() {
+        chosenHouse = 0;
+        direction = 0;
+        this.buocDi.chose = 0;
+        this.buocDi.direc = 0;
+    }
+    
+    
     //Danh sach cac nha`
-    public void setSide(int pS){
-        if(pS == 2){
+    public void setSide(int pS) {
+        if (pS == 2) {
             this.firstHouse = 1;
             this.lastHouse = 5;
-        }
-        else{
-            this.firstHouse = 6;
-            this.lastHouse = 10;
+        } else {
+            this.firstHouse = 7;
+            this.lastHouse = 11;
         }
     }
     
@@ -70,10 +78,22 @@ public class Player extends JPanel {
         
         if(Canvas.mouseButtonState(1)){
             
-            //Neu bam vao` 1 nha
-            for (int i=1;i<=10;i++)
+            //luot cua p1
+            if(playerSide == 2)
+            for (int i=1;i<=5;i++)
                 if(board.houses[i].shape.contains(mousePosition)) {
-                    for(int j=1;j<=10;j++)
+                    for(int j=1;j<=5;j++)
+                        board.houses[j].chosen = false;
+                    board.houses[i].chosen=true;  //Nha dc chon to mau` vang
+                    chosenHouse = i;              //nha dc chon la i
+                }
+            
+            
+            //Luot cua p2
+            if(playerSide == 1)
+            for (int i=7;i<=11;i++)
+                if(board.houses[i].shape.contains(mousePosition)) {
+                    for(int j=7;j<=11;j++)
                         board.houses[j].chosen = false;
                     board.houses[i].chosen=true;  //Nha dc chon to mau` vang
                     chosenHouse = i;              //nha dc chon la i
@@ -94,9 +114,12 @@ public class Player extends JPanel {
         }
         */
         
-        if (direction!= 0){
-            if (playerSide == 1) game.turnToken =3;
-            else game.turnToken = 4;
+        if (direction != 0) {
+            if (playerSide == 1) {
+                game.turnToken = 3;
+            } else {
+                game.turnToken = 4;
+            }
         }
         
         
