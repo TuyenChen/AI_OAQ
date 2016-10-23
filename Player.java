@@ -17,7 +17,7 @@ public class Player extends JPanel {
     private Board board;            //Sân chơi hiện tại của game
     private House[] houses;  //Địa chỉ các nhà dân mà mình quản lý (1,2,3,4,5) ||  (10,9,8,7,6)
     static String playerName; 
-    protected int currentScore;    //Điểm của người chơi = số dân thu về
+    public int currentScore;    //Điểm của người chơi = số dân thu về
     protected int direction;        // Hướng đi đã chọn       
     protected int chosenHouse;     //CHọn nhà
     public int playerSide;         // Có 2 player, =1 nếu là player1, =2 là player2

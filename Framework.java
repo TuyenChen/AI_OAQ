@@ -62,6 +62,7 @@ public class Framework extends Canvas {
      */
     public static GameState gameState;
     
+    public static GameState preState;
     /**
      * Elapsed game time in nanoseconds.
      */
@@ -70,12 +71,18 @@ public class Framework extends Canvas {
     private long lastTime;
     //Img background menu
     private BufferedImage bg_introduce;
+    
+    public static BufferedImage pause;
+    //Menu chinh
     private BufferedImage bg_menu;
     private BufferedImage btn_start;
     private BufferedImage btn_rules;
     private BufferedImage btn_options;
     private BufferedImage btn_exit;
     
+    //Luat choi = hinh anh
+    public  BufferedImage[] rules;
+    private int pageRule;
     // The actual game
     private Game game;
     
@@ -103,9 +110,18 @@ public class Framework extends Canvas {
      */
     private void Initialize()
     {
-        
+        rules = new BufferedImage[8];
+        pageRule =1;
     }
     
+    private void preStarting(){
+        try{
+            URL bg_introImgUrl = this.getClass().getResource("/testsquares2/resources/images/introduce.jpg");
+            bg_introduce = ImageIO.read(bg_introImgUrl);
+        }catch (IOException ex) {
+            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * Load files - images, sounds, ...
      * This method is intended to load files for this class, files for the actual game can be loaded in Game.java.
@@ -114,8 +130,7 @@ public class Framework extends Canvas {
     {
         try
         {
-            URL introImgUrl = this.getClass().getResource("/testsquares2/resources/images/introduce.jpg");
-            bg_introduce = ImageIO.read(introImgUrl);
+            
             
             URL menuImgUrl = this.getClass().getResource("/testsquares2/resources/images/bg_menu.jpg");
             bg_menu = ImageIO.read(menuImgUrl);
@@ -131,6 +146,15 @@ public class Framework extends Canvas {
             
             URL exitImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_exit.png");
             btn_exit = ImageIO.read(exitImgUrl);
+            
+            for (int i = 1; i<=7;i++){
+                URL tempRuleImgUrl = this.getClass().getResource("/testsquares2/resources/images/rule_"+i+".jpg");
+                rules[i] = ImageIO.read(tempRuleImgUrl);
+            }
+            
+            URL pauseImgUrl = this.getClass().getResource("/testsquares2/resources/images/pause.png");
+            pause = ImageIO.read(pauseImgUrl);
+            
         }
         catch (IOException ex) {
             Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
@@ -167,6 +191,9 @@ public class Framework extends Canvas {
                 case GAMEOVER:
                     //...game.over();
                 break;
+                case PAUSE:
+                    pause();
+                break;
                 case MAIN_MENU:
                     gameMenu();
                 break;
@@ -174,30 +201,26 @@ public class Framework extends Canvas {
                     //Tuy chinh am thanh
                 break;
                 case RULES:
-                    //Luật chơi
+                    gameRules();
                 break;
                 case GAME_CONTENT_LOADING:
                     //...
                 break;
-                case INTRODUCE:
-                    {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    gameState = GameState.MAIN_MENU;
-                break;
+                
                 case STARTING:
                     // Sets variables and objects.
                     Initialize();
                     // Load files - images, sounds, ...
                     LoadContent();
                     
+                    try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     
                     // When all things that are called above finished, we change game status to main menu.
-                    gameState = GameState.INTRODUCE;
+                    gameState = GameState.MAIN_MENU;
                 break;
                 case VISUALIZING:
                     
@@ -205,7 +228,7 @@ public class Framework extends Canvas {
                     {
                         frameWidth = this.getWidth();
                         frameHeight = this.getHeight();
-
+                        preStarting();
                         // When we get size of frame we change status.
                         gameState = GameState.STARTING;
                     }
@@ -250,6 +273,11 @@ public class Framework extends Canvas {
             case GAMEOVER:
                 //Draw Ket qua
             break;
+            case PAUSE:
+                game.Draw(g2d, mousePosition());
+                g2d.drawImage(pause, 240, 176, null);
+            break;
+            case GAME_CONTENT_LOADING:
             case MAIN_MENU:
                 g2d.drawImage(bg_menu, 0, 0,frameWidth,frameHeight,null);
                 g2d.drawImage(btn_start, frameWidth/2, frameHeight/3 + 70, null);
@@ -261,14 +289,12 @@ public class Framework extends Canvas {
                 //Sound UI
             break;
             case RULES:
-                //Luật chơi
+                g2d.drawImage(rules[pageRule],0 ,0 , null);
             break;
-            case INTRODUCE:
+            case STARTING:
                 g2d.drawImage(bg_introduce, 0, 0, null);
             break;
-            case GAME_CONTENT_LOADING:
-                //...
-            break;
+            
         }
     }
     
@@ -289,6 +315,43 @@ public class Framework extends Canvas {
             if(new Rectangle(frameWidth/2 + 13, frameHeight/3 + 355,btn_exit.getWidth(),btn_exit.getHeight()).contains(mousePosition()))
                 System.exit(0);
         }
+        preState = GameState.MAIN_MENU;
+    }
+    //Luật chơi
+    private void gameRules(){
+        if(Canvas.keyboardKeyState(KeyEvent.VK_LEFT)&&(pageRule>1)){
+            pageRule--;
+            //Tam nghi
+            try {
+                 Thread.sleep(300);
+            } catch (InterruptedException ex) { }
+        }
+        if(Canvas.keyboardKeyState(KeyEvent.VK_RIGHT)&&(pageRule<7)){
+            pageRule++;
+            //Tam nghi
+            try {
+                 Thread.sleep(300);
+            } catch (InterruptedException ex) { }
+        }
+    }
+    
+    private void pause(){
+        if(Canvas.mouseButtonState(MouseEvent.BUTTON1)){
+            if(new Rectangle(550, 266,205,90).contains(mousePosition()))
+                gameState = GameState.PLAYING;
+            
+            if(new Rectangle(550, 375,205,90).contains(mousePosition()))
+                gameState = GameState.RULES;
+            
+            if(new Rectangle(550, 480,205,90).contains(mousePosition())){
+                gameState = GameState.MAIN_MENU;
+                try {
+                 //Provides the necessary delay and also yields control so that other thread can do work.
+                 Thread.sleep(100);
+            } catch (InterruptedException ex) { }
+            }
+        }
+        preState = GameState.PAUSE;
     }
     
     /**
@@ -363,11 +426,18 @@ public class Framework extends Canvas {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     gameState = GameState.PAUSE;
             break;
+            case PAUSE:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.PLAYING;
+            break;
             case MAIN_MENU:
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     System.exit(0);
             break;
             case RULES:
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = preState;
+            break;
             case OPTIONS:
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     gameState = GameState.MAIN_MENU;

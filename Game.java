@@ -17,6 +17,7 @@ public class Game {
 
     public Board board;
     public Player p1,p2;
+    public int sp1,sp2;
     public TrongTai trongTai;
     public int turnToken;  //Dùng để chia lượt
     
@@ -55,6 +56,8 @@ public class Game {
          trongTai = new TrongTai(this);
         turnToken =1;
         soils = new BufferedImage[10];
+        sp1 = p1.currentScore;
+        sp2 = p2.currentScore;
     }
     
     /**
@@ -163,9 +166,10 @@ public class Game {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.drawImage(background, 0, 0, null);
-        g2d.drawImage(ava_bot, 560, 75, null);
-        g2d.drawImage(ava_player, 460, 570, null);
+        g2d.drawImage(ava_bot, 599, 84, null);
+        g2d.drawImage(ava_player, 518, 557, null);
         board.paint(g2d);      //Vẽ lại sân sau khi xử lí
         //trongTai.paint(g2d);
+        board.paintScore(g2d, sp1, sp2);
     }
 }

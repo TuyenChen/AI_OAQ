@@ -5,6 +5,8 @@
  */
 package testSQuares2;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 /**
@@ -57,6 +59,22 @@ class Board {
         q0.setVilla(0,START_X -100,START_Y,true);
         q5.setVilla(5,START_X +403,START_Y,true);
     }
+    //In điểm số
+    public void paintScore(Graphics2D g2d,int scoreP1,int scoreP2){
+        g2d.setColor(Color.MAGENTA);
+	g2d.setFont(new Font("Verdana", Font.BOLD, 100));
+	g2d.drawString(standScore(scoreP1), 940, 678);
+        g2d.drawString(standScore(scoreP1), 185, 188);
+    }
+    //Chuẩn hóa điểm số 5 => 05, 0 =>00
+    private String standScore(int score){
+        if (score < 10)
+        return "0"+String.valueOf(score);
+        else return String.valueOf(score);
+    }
+    
+    
+    
     
     //Ve lai san
     public void paint(Graphics2D g2d){
