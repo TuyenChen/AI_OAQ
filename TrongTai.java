@@ -5,7 +5,6 @@
  */
 package testSQuares2;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
@@ -20,14 +19,14 @@ class TrongTai {
     public Board board;
     private Image hand;
     int danInHand;
-    private float x, y;         //Tọa độ bàn tay
+    private int x, y;         //Tọa độ bàn tay
     Step buocDi;
-    int flagQuan;
+    int selected;
 
     // Short Link
     House[] houseShortLink;
     Villa q0ShortLink;
-    Villa q5ShortLink;
+    Villa q6ShortLink;
     Player p1ShortLink;
     Player p2ShortLink;
 
@@ -38,7 +37,7 @@ class TrongTai {
         danInHand = 0;
         houseShortLink = game.board.houses;
         q0ShortLink = game.board.q0;
-        q5ShortLink = game.board.q6;
+        q6ShortLink = game.board.q6;
         p1ShortLink = game.p1;
         p2ShortLink = game.p2;
     }
@@ -53,38 +52,41 @@ class TrongTai {
      */
     public void handle(Step buocDi) {
 
-        int soDan;
-        int selected = buocDi.chose;
-        int[] result = null;
-        flagQuan = 1;
+        System.out.println("Chose : " + buocDi.chose + " Direction : " + buocDi.direc);
 
+        int soDan;
+        this.selected = buocDi.chose;
+
+//        boolean flagAn = false;
         // Kiem tra so dan trong nha cuoi de di tiep
         while (true) {
-            soDan = layQuan(selected);
+            soDan = layQuan(this.selected);
+            chuyenNhaKe(buocDi.direc);
 
-            result = raiQuan(soDan, selected, selected);
-            selected = result[1];
-            flagQuan = result[0];
-            if (checkFinalHouse(selected, buocDi.direc, flagQuan) != 1) {
+            raiQuan(soDan, buocDi.direc);
+
+            if (checkFinalHouse(this.selected, buocDi.direc) != 1) {
                 break;
             }
         }
 
         // TH An Dan
-        while (checkFinalHouse(selected, buocDi.direc, flagQuan) == 2 || checkFinalHouse(selected, buocDi.direc, flagQuan) == 3) {
+        while (checkFinalHouse(this.selected, buocDi.direc) == 2) {
+            chuyenNhaKe(buocDi.direc);
 
-            int resultCheck = checkFinalHouse(selected, buocDi.direc, flagQuan);
-            if (resultCheck == 2) {
-                selected = AnDan(buocDi, selected, buocDi.direc);
-            } else if (resultCheck == 3) {
-                selected = AnQuan(buocDi, selected, buocDi.direc);
-            }
+            An(buocDi, this.selected);
+            // Chuyen den o tiep theo de xet
+            chuyenNhaKe(buocDi.direc);
+            System.out.println("An");
         }
 
+        // set token de choi tiep
+        setTurnToken(buocDi);
         if (!checkContinueGame(board)) {
-//            this.game.state = 0;
+            this.game.turnToken = 0;
         }
 
+        resetBuocDi();
     }
 
     /**
@@ -100,6 +102,26 @@ class TrongTai {
         return danSo;
     }
 
+    public void chuyenNhaKe(int direction) {
+        this.selected = tangNhaKe(direction, this.selected);
+    }
+
+    public int tangNhaKe(int direction, int current) {
+        if (direction == 1) {
+            if (current == 11) {
+                current = 0;
+            } else {
+                current++;
+            }
+        } else if (current == 0) {
+            current = 11;
+        } else {
+            current--;
+        }
+
+        return current;
+    }
+
     /**
      * Lay So Dan va dai den khi het
      *
@@ -108,80 +130,23 @@ class TrongTai {
      * @param selected => O Duoc chon
      * @return O Cuoi Cung khi het quan (so quan con lai de rai = 0)
      */
-    public int[] raiQuan(int soDan, int direction, int selected) {
-        int flagRaiQuan = 0;
-        // rai cung chieu kim dong ho
-        if (direction == 1) {
+    public void raiQuan(int soDan, int direction) {
 
-            flagRaiQuan = 0;
+        for (int i = soDan; i > 0; i--) {
 
-            selected++;
-            if (selected == 11) {
-                selected = 0;
+            // neu vao quan 0
+            if (this.selected == 0) {
+                q0ShortLink.tangDanSo();
+            } // neu vao quan 6
+            else if (this.selected == 6) {
+                q6ShortLink.tangDanSo();
+            } // neu khong vao quan
+            else {
+                houseShortLink[this.selected].tangDanSo();
             }
-            // 0: Chua vao quan
-            // 1: Da vao quan
-            // Lay so dan dai den khi het i = 0 out vong lap
-            for (int i = soDan; i > 0; i--) {
-
-                // neu vao quan 0
-                if (selected == 0) {
-                    q0ShortLink.tangDanSo();
-                    selected++;
-                } // neu vao quan 6
-                else if (selected == 6 && flagRaiQuan == 0) {
-                    q5ShortLink.tangDanSo();
-                    flagQuan = 1;
-                } // neu khong vao quan
-                else {
-                    // neu vua di qua quan 6 set lai flagQuan = 0
-                    if (selected == 6) {
-                        flagQuan = 0;
-                    }
-                    houseShortLink[selected].tangDanSo();
-                    selected++;
-                    // neu o tiep theo la sau o 10 giam selected ve 0
-                    if (selected == 11) {
-                        selected = 0;
-                    }
-
-                }
-            }
-        } // rai theo chieu nguoc kim dong ho
-        else {
-            flagRaiQuan = 0; // kiem tra dieu kien vao quan tai selected = 5
-            // 0: Chua vao quan
-            // 1: Da vao quan
-            selected--;
-
-            // Lay so dan dai den khi het i = 0 out vong lap
-            for (int i = soDan; i > 0; i--) {
-
-                // neu vao quan 0
-                if (selected == 0) {
-                    q0ShortLink.tangDanSo();
-                    selected = 10;
-                } // neu vao quan 5
-                else if (selected == 5 && flagRaiQuan == 0) {
-                    q5ShortLink.tangDanSo();
-                    flagQuan = 1;
-                } // neu khong vao quan
-                else {
-                    // neu vua di qua quan 6 set lai flagQuan = 0
-                    if (selected == 5) {
-                        flagQuan = 0;
-                    }
-                    houseShortLink[selected].tangDanSo();
-                    selected--;
-                }
-            }
+            chuyenNhaKe(direction);
         }
 
-        int[] result = null;
-        result[0] = flagRaiQuan;
-        result[1] = selected;
-
-        return result;
     }
 
     /**
@@ -193,56 +158,61 @@ class TrongTai {
      * khong la quan) 2 => An Dan (O Trong sau do la 1 o dan co quan) 3 => An
      * Quan
      */
-    public int checkFinalHouse(int selected, int direction, int flagQuan) {
-        if (selected == -1) {
+    public int checkFinalHouse(int current, int direction) {
+        // vao o quan
+        if (current == 0 || current == 6) {
             return 0;
         }
-        // neu rai theo chieu kim dong ho
-        if (direction == 1) {
-            // Gap O Quan
-            if (selected == 0 || (selected == 6 && flagQuan == 0)) {
-                return 0;
+
+        // Khong Gap O Quan
+        // So Dan khac 0 Choi Tiep
+        if (houseShortLink[current].getDanSo() != 0) {
+            return 1;
+        }
+
+        // So dan o do = 0
+        // So dan o tiep theo 
+        int checked = tangNhaKe(direction, current);
+        // = 0 Dung
+        // != 0 An
+        if (checkEmpty(current)) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Kiem tra nha trong hay khong
+     *
+     * @param current
+     * @return
+     */
+    public boolean checkEmpty(int current) {
+        if (current == 0) {
+            if (q0ShortLink.coQuan || q0ShortLink.getDanSo() != 0) {
+                return false;
             }
-            // Khong Gap O Quan
-            // So Dan khac 0 Choi Tiep
-            if (houseShortLink[selected].getDanSo() != 0) {
-                return 1;
+            return true;
+        }
+        if (current == 6) {
+            if (q6ShortLink.coQuan || q6ShortLink.getDanSo() != 0) {
+                return false;
             }
-            // So dan o do = 0
-            // So dan o tiep theo 
-            // = 0 Dung
-            // != 0 An
-            if ((selected == 5 && q5ShortLink.getDanSo() != 0) || (selected == 10 && q0ShortLink.getDanSo() != 0)) {
-                return 3;
-            }
-            if (houseShortLink[selected + 1].getDanSo() != 0) {
-                return 2;
-            } else {
-                return 0;
-            }
-        } // neu nguoc lai
-        // direction nguoc chieu kim dong ho
-        else {
-            if (selected == 0 || (selected == 5 && flagQuan == 0)) {
-                return 0;
-            }
-            // Khong Gap O Quan
-            // So Dan khac 0 Choi Tiep
-            if (houseShortLink[selected].getDanSo() != 0) {
-                return 1;
-            }
-            // So dan o do = 0
-            // So dan o tiep theo 
-            // = 0 Dung
-            // != 0 An
-            if ((selected == 6 && q5ShortLink.getDanSo() != 0) || (selected == 1 && q0ShortLink.getDanSo() != 0)) {
-                return 3;
-            }
-            if (houseShortLink[selected - 1].getDanSo() != 0) {
-                return 2;
-            } else {
-                return 0;
-            }
+            return true;
+        }
+        if (houseShortLink[current].getDanSo() != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public void An(Step buocDi, int current) {
+        if (current == 0 || current == 6) {
+            AnQuan(buocDi, current);
+        } else {
+            AnDan(buocDi, current);
+            System.out.println("An Dan");
         }
     }
 
@@ -251,114 +221,86 @@ class TrongTai {
      *
      * @param selected
      * @param direction => Chieu an quan
-     * @return selected
+     * @return
      */
-    public int AnDan(Step buocDi, int selected, int direction) {
-        if (direction == 1) {
-            selected++;
-            if (buocDi.chose > 5) {
-                p1ShortLink.currentScore += layQuan(selected);
-            } else {
-                p2ShortLink.currentScore += layQuan(selected);
-            }
-            // An den nha cuoi cung sat quan
-            if (selected == 5 || selected == 10) {
-                return -1;
-            }
-            selected++;
-        } else {
-            selected--;
-            if (buocDi.chose > 5) {
-                p1ShortLink.currentScore += layQuan(selected);
-            } else {
-                p2ShortLink.currentScore += layQuan(selected);
-            }
-            // An den nha cuoi cung sat quan
+    public void AnDan(Step buocDi, int current) {
 
-            if (selected == 1 || selected == 6) {
-                return -1;
-            }
-            selected--;
+        if (isPlayer1(buocDi)) {
+            p1ShortLink.currentScore += layQuan(current);
+
+        } else {
+            p2ShortLink.currentScore += layQuan(current);
         }
 
-        this.flagQuan = 0;
-
-        return selected;
     }
 
-    public int AnQuan(Step buocDiStep, int selected, int direction) {
-        if (direction == 1) {
-            if (selected == 0) {
+    public void AnQuan(Step buocDi, int current) {
+
+        // Quan 0
+        if (current == 0) {
+            if (isPlayer1(buocDi)) {
+                p1ShortLink.currentScore = p1ShortLink.currentScore + q0ShortLink.getDanSo();
+                q0ShortLink.setDanSo(0);
                 if (q0ShortLink.coQuan) {
                     q0ShortLink.coQuan = false;
-                    if (buocDi.chose > 5) {
-                        p1ShortLink.currentScore = p1ShortLink.currentScore + 10 + q0ShortLink.getDanSo();
-                        q0ShortLink.setDanSo(0);
-                    } else {
-                        p2ShortLink.currentScore = p2ShortLink.currentScore + 10 + q0ShortLink.getDanSo();
-                        q0ShortLink.setDanSo(0);
-                    }
+                    p1ShortLink.currentScore += 10;
                 }
-
-                selected++;
             } else {
-                if (q5ShortLink.coQuan) {
-                    q5ShortLink.coQuan = false;
-                    if (buocDi.chose > 5) {
-                        p1ShortLink.currentScore = p1ShortLink.currentScore + 10 + q5ShortLink.getDanSo();
-                        q5ShortLink.setDanSo(0);
-                    } else {
-                        p2ShortLink.currentScore = p2ShortLink.currentScore + 10 + q5ShortLink.getDanSo();
-                        q5ShortLink.setDanSo(0);
-                    }
-                }
-                selected++;
-                // Dong nay xem lai
-                this.flagQuan = 1;
-            }
-        } else if (selected == 0) {
-            if (q0ShortLink.coQuan) {
-                q0ShortLink.coQuan = false;
-                if (buocDi.chose > 5) {
-                    p1ShortLink.currentScore = p1ShortLink.currentScore + 10 + q0ShortLink.getDanSo();
-                    q0ShortLink.setDanSo(0);
-                } else {
-                    p2ShortLink.currentScore = p2ShortLink.currentScore + 10 + q0ShortLink.getDanSo();
-                    q0ShortLink.setDanSo(0);
+                p2ShortLink.currentScore = p2ShortLink.currentScore + q0ShortLink.getDanSo();
+                q0ShortLink.setDanSo(0);
+                if (q0ShortLink.coQuan) {
+                    q0ShortLink.coQuan = false;
+                    p2ShortLink.currentScore += 10;
                 }
             }
-
-            selected = 10;
+        } // Quan 6
+        else if (isPlayer1(buocDi)) {
+            p1ShortLink.currentScore = p1ShortLink.currentScore + q6ShortLink.getDanSo();
+            q6ShortLink.setDanSo(0);
+            if (q6ShortLink.coQuan) {
+                q6ShortLink.coQuan = false;
+                p1ShortLink.currentScore += 10;
+            }
         } else {
-            if (q5ShortLink.coQuan) {
-                q5ShortLink.coQuan = false;
-                if (buocDi.chose > 5) {
-                    p1ShortLink.currentScore = p1ShortLink.currentScore + 10 + q5ShortLink.getDanSo();
-                    q5ShortLink.setDanSo(0);
-                } else {
-                    p2ShortLink.currentScore = p2ShortLink.currentScore + 10 + q5ShortLink.getDanSo();
-                    q5ShortLink.setDanSo(0);
-                }
+            p2ShortLink.currentScore = p2ShortLink.currentScore + q6ShortLink.getDanSo();
+            q6ShortLink.setDanSo(0);
+            if (q6ShortLink.coQuan) {
+                q6ShortLink.coQuan = false;
+                p2ShortLink.currentScore += 10;
             }
-            selected--;
-            // Dong nay xem lai
-            this.flagQuan = 1;
         }
-        return selected;
+
     }
 
     public boolean checkContinueGame(Board board) {
-        //Nhà Quan còn dân thì vẫn tiếp tục        
-//        return !(q0ShortLink.getDanSo() == 0 && !q0ShortLink.coQuan && q5ShortLink.getDanSo() == 0 && !q5ShortLink.coQuan);
+        if (checkEmpty(0) && checkEmpty(6))
+            return false;
         return true;
     }
 
-    public void paint(Graphics2D g2d) {
-        g2d.drawImage(Game.houseChosen, x - 100, y - 100, null);
-        g2d.drawImage(Game.tayChoXuong, x - 100, y - 100, null);
+    public boolean isPlayer1(Step buocDi) {
+        if (buocDi.chose > 6) {
+            return true;
+        }
+        return false;
     }
 
-    public void paintLayQuan(Graphics2D g, int selected) {
+    // set token cho luot tiep theo
+    public void setTurnToken(Step buocDi) {
 
+        if (isPlayer1(buocDi)) {
+            game.turnToken = 2;
+        } else {
+            game.turnToken = 1;
+        }
+    }
+
+    public void resetBuocDi() {
+        p1ShortLink.resetBuocDi();
+        p2ShortLink.resetBuocDi();
+    }
+
+    public void paint(Graphics2D g2d) {
+//        g2d.drawImage(Game.voSoi, x, y - 50, null);
     }
 }
