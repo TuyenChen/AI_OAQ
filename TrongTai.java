@@ -52,8 +52,6 @@ class TrongTai {
      */
     public void handle(Step buocDi) {
 
-        System.out.println("Chose : " + buocDi.chose + " Direction : " + buocDi.direc);
-
         int soDan;
         this.selected = buocDi.chose;
 
@@ -77,13 +75,19 @@ class TrongTai {
             An(buocDi, this.selected);
             // Chuyen den o tiep theo de xet
             chuyenNhaKe(buocDi.direc);
-            System.out.println("An");
         }
 
         // set token de choi tiep
         setTurnToken(buocDi);
         if (!checkContinueGame(board)) {
             this.game.turnToken = 0;
+        }
+
+        // Trong Truong hop khong du quan de rai khi het dan trong cac o
+        // Score < 5
+        // thi game over
+        if (checkBoardPlayer(this.game.turnToken)) {
+            themDan(this.game.turnToken);
         }
 
         resetBuocDi();
@@ -212,7 +216,6 @@ class TrongTai {
             AnQuan(buocDi, current);
         } else {
             AnDan(buocDi, current);
-            System.out.println("An Dan");
         }
     }
 
@@ -273,13 +276,27 @@ class TrongTai {
     }
 
     public boolean checkContinueGame(Board board) {
-        if (checkEmpty(0) && checkEmpty(6))
+        if (checkEmpty(0) && checkEmpty(6)) {
             return false;
+        }
         return true;
     }
 
     public boolean isPlayer1(Step buocDi) {
         if (buocDi.chose > 6) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Turn tiep theo la player 1
+     *
+     * @param token
+     * @return true neu dung false neu sai
+     */
+    public boolean nextTurnIsPlayer1(int token) {
+        if (token == 1) {
             return true;
         }
         return false;
@@ -292,6 +309,53 @@ class TrongTai {
             game.turnToken = 2;
         } else {
             game.turnToken = 1;
+        }
+    }
+
+    // kiem tra 
+    // neu so quan tren ban het thi them
+    public boolean checkBoardPlayer(int token) {
+        boolean allEmpty = true;
+        if (nextTurnIsPlayer1(token)) {
+            for (int i = 7; i <= 11; i++) {
+                if (houseShortLink[i].getDanSo() != 0) {
+                    allEmpty = false;
+                }
+            }
+        } else {
+            for (int i = 1; i < 6; i++) {
+                if (houseShortLink[i].getDanSo() != 0) {
+                    allEmpty = false;
+                }
+            }
+        }
+        return allEmpty;
+    }
+
+    /**
+     * Them 1 dan vao moi o cua player co luot tiep
+     *
+     * @param token
+     */
+    public void themDan(int token) {
+        if (nextTurnIsPlayer1(token)) {
+            for (int i = 7; i <= 11; i++) {
+                houseShortLink[i].setDanSo(1);
+            }
+            // Tru diem cua player
+            if (p1ShortLink.currentScore < 5) {
+                this.game.turnToken = 0;
+            }
+            p1ShortLink.currentScore -= 5;
+        } else {
+            for (int i = 1; i <= 5; i++) {
+                houseShortLink[i].setDanSo(1);
+            }
+            // Tru diem cua player
+            if (p2ShortLink.currentScore < 5) {
+                this.game.turnToken = 0;
+            }
+            p2ShortLink.currentScore -= 5;
         }
     }
 
