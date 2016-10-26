@@ -6,6 +6,7 @@
 package testSQuares2;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
@@ -47,9 +48,13 @@ public class Villa extends House {
     }
 
     public void paint(Graphics2D g2d) {
-        g2d.setColor(Color.red);
+        g2d.setColor(Color.gray);
+        g2d.setFont(new Font("Tw Cen MT Bold Italic", Font.BOLD, 40));
         //Vẽ Nhà Quan
         if (quanID == 6) {
+            
+            //Hiển thị số dân trong quan
+            g2d.drawString(String.valueOf(this.getDanSo()), 880, 300);
             if (coQuan) {
                 //ve hinh co quan 6 + dan
                 g2d.drawImage(Game.quan6, x + 100, y, null);
@@ -58,16 +63,18 @@ public class Villa extends House {
                 // ve hinh quan 6 co dan
             }
 
-        } else if (coQuan) {
-            //ve hinh quan 0 co quan + dan
-            g2d.drawImage(Game.quan0, x - 100, y, null);
+        } else {
+            g2d.drawString(String.valueOf(this.getDanSo()), 200, 470);
+            if (coQuan) {
+                //ve hinh quan 0 co quan + dan
+                g2d.drawImage(Game.quan0, x - 100, y, null);
+            }
+            else {
+                // ve quan 0 co dan
+            }
         }
-        else {
-            // ve quan 0 co dan
-        }
-
         g2d.setColor(Color.gray);
-
+        
     }
 
 }

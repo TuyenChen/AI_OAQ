@@ -42,6 +42,14 @@ public class Player extends JPanel {
         direction = 0;
         this.buocDi.chose = 0;
         this.buocDi.direc = 0;
+        if (playerSide == 2)
+                for (int i = 1; i <= 5; i++) {
+                    board.houses[i].chosen=false;
+                }
+        if (playerSide == 1)
+                for (int i = 7; i <= 11; i++) {
+                    board.houses[i].chosen=false;
+                }
     }
 
     //Danh sach cac nha`
