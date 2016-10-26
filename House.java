@@ -72,8 +72,11 @@ class House {
         g2d.setColor(Color.blue);
         //Vẽ Nhà Dân màu
         //g2d.draw(this.shape);           
-        if (chosen) {
+        if ((chosen)&&(houseID>6)) {
             g2d.drawImage(Game.houseChosen, x - 100, y, null);
+        }
+        if ((chosen)&&(houseID<6)) {
+            g2d.drawImage(Game.houseChosen_Bot, x - 100, y-100, null);
         }
         //Vẽ Dân trong nhà
         g2d.setColor(Color.gray);

@@ -80,6 +80,7 @@ class TrongTai {
         // set token de choi tiep
         setTurnToken(buocDi);
         if (!checkContinueGame(board)) {
+            System.out.println("TrongTai thong bao: GameOver");
             this.game.turnToken = 0;
         }
 
@@ -365,6 +366,8 @@ class TrongTai {
     }
 
     public void paint(Graphics2D g2d) {
-//        g2d.drawImage(Game.voSoi, x, y - 50, null);
+        //g2d.drawImage(Game.voSoi, x, y - 50, null);
+        
+                
     }
 }

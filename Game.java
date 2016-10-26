@@ -1,5 +1,7 @@
 package testSQuares2;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -17,15 +19,15 @@ public class Game {
 
     public Board board;
     public Player p1,p2;
-    public int sp1,sp2;
     public TrongTai trongTai;
     public int turnToken;  //Dùng để chia lượt
     
     private BufferedImage background;
     public static BufferedImage[] soils; 
     public static BufferedImage quan0,quan6;
-    public static BufferedImage houseChosen;
+    public static BufferedImage houseChosen,houseChosen_Bot;
     public static BufferedImage ava_bot,ava_player;
+    public static BufferedImage voSoi,choTayXuong,namTay;
     public Game()
     {
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
@@ -56,8 +58,6 @@ public class Game {
          trongTai = new TrongTai(this);
         turnToken =1;
         soils = new BufferedImage[10];
-        sp1 = p1.currentScore;
-        sp2 = p2.currentScore;
     }
     
     /**
@@ -109,6 +109,18 @@ public class Game {
             URL chosenImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen.png");
             houseChosen = ImageIO.read(chosenImgUrl);
             
+            URL chosen_BotImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen_Bot.png");
+            houseChosen_Bot = ImageIO.read(chosen_BotImgUrl);
+            
+            URL voSoiImgUrl = this.getClass().getResource("/testsquares2/resources/images/voSoi.png");
+            voSoi = ImageIO.read(voSoiImgUrl);
+            
+            URL choTayXuongImgUrl = this.getClass().getResource("/testsquares2/resources/images/choTayXuong.png");
+            choTayXuong = ImageIO.read(choTayXuongImgUrl);
+            
+            URL namTayImgUrl = this.getClass().getResource("/testsquares2/resources/images/namTay.png");
+            namTay = ImageIO.read(namTayImgUrl);
+            
         }
         catch (IOException ex) {
             Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
@@ -144,6 +156,7 @@ public class Game {
                 trongTai.handle(p2.getStep());break;
             case 0:
                 Framework.gameState = Framework.GameState.GAMEOVER;
+            break;
             
         }
         
@@ -168,8 +181,16 @@ public class Game {
         g2d.drawImage(background, 0, 0, null);
         g2d.drawImage(ava_bot, 599, 84, null);
         g2d.drawImage(ava_player, 518, 557, null);
-        board.paint(g2d);      //Vẽ lại sân sau khi xử lí
+        
+        if((turnToken == 3)||(turnToken ==4)){
+            trongTai.paint(g2d);
+        }else{
+            board.paint(g2d);      //Vẽ lại sân sau khi xử lí
+        }
         //trongTai.paint(g2d);
-        board.paintScore(g2d, sp1, sp2);
+        board.paintScore(g2d, p1.currentScore, p2.currentScore);
+        g2d.setColor(Color.white);
+        g2d.setFont(new Font("SansSerif.bold", Font.BOLD, 40));
+        g2d.drawString(String.valueOf(Framework.gameState), 95, 755);
     }
 }

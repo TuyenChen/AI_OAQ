@@ -271,7 +271,10 @@ public class Framework extends Canvas {
                 game.Draw(g2d, mousePosition());
             break;
             case GAMEOVER:
-                //Draw Ket qua
+                game.Draw(g2d, mousePosition());
+                g2d.setColor( new Color(102, 102, 102));
+                g2d.setFont(new Font("SansSerif",Font.PLAIN, 120));
+                g2d.drawString("Ket Qua: xxx", 450, 325);
             break;
             case PAUSE:
                 game.Draw(g2d, mousePosition());

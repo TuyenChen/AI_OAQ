@@ -67,7 +67,7 @@ class Board {
         g2d.setColor(Color.MAGENTA);
 	g2d.setFont(new Font("Verdana", Font.BOLD, 100));
 	g2d.drawString(standScore(scoreP1), 940, 678);
-        g2d.drawString(standScore(scoreP1), 185, 188);
+        g2d.drawString(standScore(scoreP2), 185, 188);
     }
     //Chuẩn hóa điểm số 5 => 05, 0 =>00
     private String standScore(int score){
