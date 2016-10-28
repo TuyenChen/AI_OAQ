@@ -6,6 +6,7 @@
 package testSQuares2;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
@@ -86,6 +87,14 @@ class House {
             } else {
                 g2d.drawImage(Game.soils[8], x, y, null);
             }
+        }
+        
+        
+        //Vẽ số lượng dân
+        if(danSo > 5){
+        g2d.setColor(Color.gray);
+        g2d.setFont(new Font("Tw Cen MT Bold Italic", Font.BOLD, 20));
+        g2d.drawString(String.valueOf(danSo),x+5 , y+92);
         }
     }
 }
