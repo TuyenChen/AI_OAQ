@@ -66,7 +66,7 @@ public class Framework extends Canvas {
     /**
      * Elapsed game time in nanoseconds.
      */
-    private long gameTime;
+    public static long gameTime;
     // It is used for calculating elapsed time.
     private long lastTime;
     //Img background menu
@@ -132,23 +132,23 @@ public class Framework extends Canvas {
         {
             
             
-            URL menuImgUrl = this.getClass().getResource("/testsquares2/resources/images/bg_menu.jpg");
+            URL menuImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/bg_menu.jpg");
             bg_menu = ImageIO.read(menuImgUrl);
             
-            URL startImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_start.png");
+            URL startImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_start.png");
             btn_start = ImageIO.read(startImgUrl);
             
-            URL rulesImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_rules.png");
+            URL rulesImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_rules.png");
             btn_rules = ImageIO.read(rulesImgUrl);
             
-            URL optionsImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_options.png");
+            URL optionsImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_options.png");
             btn_options = ImageIO.read(optionsImgUrl);
             
-            URL exitImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_exit.png");
+            URL exitImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_exit.png");
             btn_exit = ImageIO.read(exitImgUrl);
             
             for (int i = 1; i<=7;i++){
-                URL tempRuleImgUrl = this.getClass().getResource("/testsquares2/resources/images/rule_"+i+".jpg");
+                URL tempRuleImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/rule_"+i+".jpg");
                 rules[i] = ImageIO.read(tempRuleImgUrl);
             }
             
@@ -268,16 +268,16 @@ public class Framework extends Canvas {
         switch (gameState)
         {
             case PLAYING:
-                game.Draw(g2d, mousePosition());
+                game.Draw(g2d, mousePosition(), gameTime);
             break;
             case GAMEOVER:
-                game.Draw(g2d, mousePosition());
+                game.Draw(g2d, mousePosition(),gameTime);
                 g2d.setColor( new Color(102, 102, 102));
                 g2d.setFont(new Font("SansSerif",Font.PLAIN, 120));
                 g2d.drawString("Ket Qua: xxx", 450, 325);
             break;
             case PAUSE:
-                game.Draw(g2d, mousePosition());
+                game.Draw(g2d, mousePosition(),gameTime);
                 g2d.drawImage(pause, 240, 176, null);
             break;
             case GAME_CONTENT_LOADING:
