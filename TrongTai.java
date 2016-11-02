@@ -42,9 +42,6 @@ class TrongTai {
         p2ShortLink = game.p2;
     }
 
-//    public void handle(Step buocDi) {
-//
-//    }
     /**
      * Thuc hien buoc di va an quan
      *
@@ -59,10 +56,13 @@ class TrongTai {
         // Kiem tra so dan trong nha cuoi de di tiep
         while (true) {
             soDan = layQuan(this.selected);
+            System.out.println("So Dan : " + soDan + " selected : " + selected);
+
             chuyenNhaKe(buocDi.direc);
 
             raiQuan(soDan, buocDi.direc);
 
+            System.out.println("Result Check : " + checkFinalHouse(this.selected, buocDi.direc));
             if (checkFinalHouse(this.selected, buocDi.direc) != 1) {
                 break;
             }
@@ -75,12 +75,13 @@ class TrongTai {
             An(buocDi, this.selected);
             // Chuyen den o tiep theo de xet
             chuyenNhaKe(buocDi.direc);
+            System.out.println("Selected : " + this.selected);
         }
 
         // set token de choi tiep
         setTurnToken(buocDi);
+        System.out.println("Continue Check : " + checkContinueGame(board));
         if (!checkContinueGame(board)) {
-            System.out.println("TrongTai thong bao: GameOver");
             this.game.turnToken = 0;
         }
 
@@ -164,8 +165,17 @@ class TrongTai {
      * Quan
      */
     public int checkFinalHouse(int current, int direction) {
+        int checked;
         // vao o quan
         if (current == 0 || current == 6) {
+            checked = tangNhaKe(direction, current);
+            if (checkEmpty(checked)) {
+                int checked_next = tangNhaKe(direction, checked);
+                if (checkEmpty(checked_next)) {
+                    return 0;
+                }
+                return 2;
+            }
             return 0;
         }
 
@@ -177,13 +187,13 @@ class TrongTai {
 
         // So dan o do = 0
         // So dan o tiep theo 
-        int checked = tangNhaKe(direction, current);
+        checked = tangNhaKe(direction, current);
         // = 0 Dung
         // != 0 An
-        if (checkEmpty(current)) {
-            return 2;
-        } else {
+        if (checkEmpty(checked)) {
             return 0;
+        } else {
+            return 2;
         }
     }
 
