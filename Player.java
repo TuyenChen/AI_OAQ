@@ -16,7 +16,9 @@ public class Player extends JPanel {
     private Board board;            //Sân chơi hiện tại của game
     private boolean[] houseCoDan;  //Địa chỉ các nhà dân xem có dân bên trong không (1,2,3,4,5) ||  (10,9,8,7,6)
     static String playerName;
-    public int currentScore;    //Điểm của người chơi = số dân thu về
+    public int currentScore;    //Điểm của người chơi = so Dân + anQUan*5
+    public int soDan;           
+    public int anQuan;
     protected int direction;        // Hướng đi đã chọn       
     protected int chosenHouse;     //CHọn nhà
     public int playerSide;         // Có 2 player, =1 nếu là player1, =2 là player2
@@ -33,7 +35,8 @@ public class Player extends JPanel {
         this.playerName = name;
         this.board = game.board;
         this.playerSide = playerSide;
-        currentScore = 0;
+        soDan = 0;
+        anQuan = 0;
         direction = 0;
         chosenHouse = 0;
         random = new Random();
@@ -169,9 +172,9 @@ public class Player extends JPanel {
     //Tra luot cho trong tai
     public void giveTurnToken(int playerSide){
         if (playerSide == 1) {
-                game.turnToken = 11;
+                game.turnToken = 3;
             } else {
-                game.turnToken = 21;
+                game.turnToken = 4;
             }
     }
     

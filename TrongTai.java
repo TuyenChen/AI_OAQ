@@ -38,7 +38,8 @@ class TrongTai {
     int state;
     boolean eating = false;
     int count = 0; // bien dem de ve ban tay
-
+    int thaoTacLay = 0; // dem lay quan
+    boolean thaoTacTha = false;
     // Short Link
     House[] houseShortLink;
     Villa q0ShortLink;
@@ -58,6 +59,7 @@ class TrongTai {
         p2ShortLink = game.p2;
         this.state = DOI;
         this.count = 0;
+        this.thaoTacLay = 0;
     }
 
     /**
@@ -71,22 +73,30 @@ class TrongTai {
         if (this.state == DOI) {
             this.selected = buocDi.chose;
             this.direction = buocDi.direc;
+            setToaDoLayQuan();
+
+            if (thaoTacLayQuan()) {
+                return;
+            }
+            this.thaoTacLay = 0;
             this.danInHand = layQuan(this.selected);
             chuyenNhaKe(this.direction);
+
             System.out.println("So Dan : " + this.danInHand + " Selected : " + this.selected + " direction : " + this.direction);
             this.state = DI;
-            setToaDo();
+            this.thaoTacTha = false;
+
             return;
         }
 
-        if (this.count < NUMBER_IMAGE) {
+        if (this.count < NUMBER_IMAGE && this.state != KIEM_TRA && !(this.state == DI && this.thaoTacTha)) {
             tangToaDo();
             return;
         }
         this.count = 0;
 
         try {
-            Thread.sleep(300);
+            Thread.sleep(200);
         } catch (Exception e) {
         }
         // kiem tra trang thai cua trong tai
@@ -108,6 +118,11 @@ class TrongTai {
                 break;
 
             case DI:
+                if (this.thaoTacTha) {
+                    this.thaoTacTha = false;
+                    return;
+                }
+                this.thaoTacTha = true;
                 rai1Quan();
                 chuyenNhaKe(direction);
                 System.out.println("So Dan : " + this.danInHand + " Selected : " + this.selected + " direction : " + this.direction);
@@ -137,9 +152,15 @@ class TrongTai {
                             this.state = DUNG;
                             break;
                         }
+                        setToaDoLayQuan();
+                        if (thaoTacLayQuan()) {
+                            return;
+                        }
+                        this.thaoTacLay = 0;
                         this.danInHand = layQuan(this.selected);
                         chuyenNhaKe(direction);
                         this.state = DI;
+                        this.thaoTacTha = false;
                         break;
 
                     // Truong hop An
@@ -163,6 +184,31 @@ class TrongTai {
 
         return;
     }
+
+    public boolean thaoTacLayQuan() {
+        if (this.thaoTacLay < 3) {
+            try {
+                Thread.sleep(300);
+            } catch (Exception e) {
+            }
+            this.thaoTacLay++;
+            return true;
+        }
+        return false;
+    }
+
+//    public boolean thaoTacThaQuan() {
+//        if (this.thaoTacTha < 2) {
+//            try {
+//                Thread.sleep(300);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(TrongTai.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            this.thaoTacTha++;
+//            return true;
+//        }
+//        return false;
+//    }
 
     /**
      * Rai 1 Quan Neu So Quan Trong tay het Chuyen trang thai ban ve kiem tra
@@ -462,9 +508,9 @@ class TrongTai {
     public void setTurnToken(Step buocDi) {
 
         if (isPlayer1(buocDi)) {
-            game.turnToken = 2;
+            game.turnToken = 5;
         } else {
-            game.turnToken = 1;
+            game.turnToken = 6;
         }
     }
 
@@ -530,28 +576,48 @@ class TrongTai {
                 this.x = game.board.START_X + (11 - this.selected + 1) * 100;
                 this.y = game.board.START_Y + 102;
             } else if (this.selected == 0) {
-                this.x = game.board.START_X - 100;
-                this.y = game.board.START_Y + 50;
-            } else {
-                this.x = game.board.START_X + 503;
-                this.y = game.board.START_Y + 50;
-            }
-        }
-        else {
-            if (this.selected < 6 && this.selected != 0) {
-                this.x = game.board.START_X + this.selected * 100;
-                this.y = game.board.START_Y;
-
-            } else if (this.selected > 6) {
-                this.x = game.board.START_X + (11 - this.selected - 1) * 100;
+                this.x = game.board.START_X;
                 this.y = game.board.START_Y + 102;
-            } else if (this.selected == 0) {
-                this.x = game.board.START_X - 100;
-                this.y = game.board.START_Y + 50;
+//                this.x = game.board.START_X - 100;
+//                this.y = game.board.START_Y + 50;
             } else {
-                this.x = game.board.START_X + 503;
-                this.y = game.board.START_Y + 50;
+                this.x = game.board.START_X + 400;
+                this.y = game.board.START_Y;
+//                this.x = game.board.START_X + 503;
+//                this.y = game.board.START_Y + 50;
             }
+        } else if (this.selected < 6 && this.selected != 0) {
+            this.x = game.board.START_X + this.selected * 100;
+            this.y = game.board.START_Y;
+
+        } else if (this.selected > 6) {
+            this.x = game.board.START_X + (11 - this.selected - 1) * 100;
+            this.y = game.board.START_Y + 102;
+        } else if (this.selected == 0) {
+            this.x = game.board.START_X;
+            this.y = game.board.START_Y;
+//            this.x = game.board.START_X - 100;
+//            this.y = game.board.START_Y + 50;
+        } else {
+            this.x = game.board.START_X + 400;
+            this.y = game.board.START_Y + 102;
+//            this.x = game.board.START_X + 503;
+//            this.y = game.board.START_Y + 50;
+        }
+    }
+
+    public void setToaDoLayQuan() {
+        setToaDo();
+        if (this.direction == 1) {
+            if (this.selected < 6) {
+                this.x += 100;
+            } else {
+                this.x -= 100;
+            }
+        } else if (this.selected > 6) {
+            this.x += 100;
+        } else {
+            this.x -= 100;
         }
     }
 
@@ -579,12 +645,27 @@ class TrongTai {
 
     public void paint(Graphics2D g2d) {
 
-        if (this.state == DI) {
+        if (this.state == DOI) {
+            if (this.thaoTacLay == 1) {
+                g2d.drawImage(Game.voSoi, this.x, this.y - 50, null);
+            } else if (this.thaoTacLay == 2) {
+                g2d.drawImage(Game.choTayXuong, this.x, this.y - 50, null);
+            }
+        } else if (this.state == DI) {
+            if (this.thaoTacTha) {
+                g2d.drawImage(Game.voSoi, this.x, this.y - 50, null);
+            } else {
+                g2d.drawImage(Game.namTay, this.x, this.y - 50, null);
+                g2d.setColor(Color.yellow);
+                g2d.drawString(String.valueOf(danInHand), this.x + 43, this.y - 50 + 38);
+            }
 
-            g2d.drawImage(Game.namTay, this.x, this.y - 50, null);
-            g2d.setColor(Color.yellow);
-            g2d.drawString(String.valueOf(danInHand), this.x+43 , this.y-50+38);
-
+        } else if (this.state == KIEM_TRA) {
+            if (this.thaoTacLay == 1) {
+                g2d.drawImage(Game.voSoi, this.x, this.y - 50, null);
+            } else if (this.thaoTacLay == 2) {
+                g2d.drawImage(Game.choTayXuong, this.x, this.y - 50, null);
+            }
         }
 
     }

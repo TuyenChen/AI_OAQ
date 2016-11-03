@@ -52,29 +52,29 @@ public class Villa extends House {
         g2d.setFont(new Font("Tw Cen MT Bold Italic", Font.BOLD, 40));
         //Vẽ Nhà Quan
         if (quanID == 6) {
-            
+
             //Hiển thị số dân trong quan
             g2d.drawString(String.valueOf(this.getDanSo()), 880, 300);
-            if (coQuan) {
-                //ve hinh co quan 6 + dan
-                g2d.drawImage(Game.quan6, x + 100, y, null);
+            if (danSo == 0); else if ((danSo <= 7) && (danSo >= 1)) {
+                g2d.drawImage(Game.soils[danSo], x-5 + 100, y + 30, null);
+            } else {
+                g2d.drawImage(Game.soils[8], x-5 + 100, y+30, null);
             }
-            else {
-                // ve hinh quan 6 co dan
+            if (coQuan) {
+                g2d.drawImage(Game.quan6, x + 100, y, null);
             }
 
         } else {
             g2d.drawString(String.valueOf(this.getDanSo()), 200, 470);
+            if (danSo == 0); else if ((danSo <= 7) && (danSo >= 1)) {
+                g2d.drawImage(Game.soils[danSo], x-5, y + 25, null);
+            } else {
+                g2d.drawImage(Game.soils[8], x-5, y + 25, null);
+            }
             if (coQuan) {
-                //ve hinh quan 0 co quan + dan
                 g2d.drawImage(Game.quan0, x - 100, y, null);
             }
-            else {
-                // ve quan 0 co dan
-            }
         }
-        g2d.setColor(Color.gray);
-        
-    }
 
+    }
 }

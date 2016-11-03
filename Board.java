@@ -68,6 +68,25 @@ class Board {
 	g2d.setFont(new Font("Verdana", Font.BOLD, 100));
 	g2d.drawString(standScore(scoreP1), 940, 678);
         g2d.drawString(standScore(scoreP2), 185, 188);
+        if(scoreP1 >0 && scoreP1 <9) g2d.drawImage(Game.soils[scoreP1], 726, 612, null);
+        else if(scoreP1 >=9) g2d.drawImage(Game.soils[8], 726, 612, null);
+        if(scoreP2 >0 && scoreP2 <9) g2d.drawImage(Game.soils[scoreP2], 397, 116, null);
+        else if(scoreP2 >=9) g2d.drawImage(Game.soils[8], 397, 116, null);
+//        if (scoreP1 == 0); else {
+//            if ((scoreP1 <= 7) && (scoreP1 >= 1)) {
+//                g2d.drawImage(Game.soils[scoreP1], 726, 612, null);
+//            } else {
+//                g2d.drawImage(Game.soils[8], 726, 612, null);
+//            }
+//        }
+//        if (scoreP2 == 0); else {
+//            if ((scoreP2 <= 7) && (scoreP2 >= 1)) {
+//                g2d.drawImage(Game.soils[scoreP2], 397, 116, null);
+//            } else {
+//                g2d.drawImage(Game.soils[8], 397, 116, null);
+//            }
+//        }
+        
     }
     //Chuẩn hóa điểm số 5 => 05, 0 =>00
     private String standScore(int score){
