@@ -22,11 +22,11 @@ public class Game {
     public int lastToken; //Kiem tra sang luot khac
     private long timeCount;
     public long timeFlag;
-    public final int TIME_LIMIT = 2;
+    public final int TIME_LIMIT = 1;
     public final int TIME_DELAY = 10;
     private BufferedImage background;
     public static BufferedImage[] soils;
-    public static BufferedImage quan0, quan6;
+    public static BufferedImage quan0, quan6, anduoc1quan, anduoc2quan;
     public static BufferedImage houseChosen, houseChosen_Bot;
     public static BufferedImage ava_bot, ava_player;
     public static BufferedImage voSoi, choTayXuong, namTay;
@@ -86,6 +86,12 @@ public class Game {
             URL quan6ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/quan6.png");
             quan6 = ImageIO.read(quan6ImgUrl);
 
+            URL anduoc1quanImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/anduoc1quan.png");
+            anduoc1quan = ImageIO.read(anduoc1quanImgUrl);
+            
+            URL anduoc2quanImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/anduoc2quan.png");
+            anduoc2quan = ImageIO.read(anduoc2quanImgUrl);
+            
             URL soil_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/soil_1.png");
             soils[1] = ImageIO.read(soil_1ImgUrl);
 
@@ -226,11 +232,11 @@ public class Game {
         if ((turnToken == 1) || (turnToken == 2)) {
             g2d.drawString(String.valueOf(TIME_LIMIT - 1 - timeCount / Framework.secInNanosec), 1008, 200);
         }
-        g2d.drawString(String.valueOf("TurnToken: " + turnToken), 900, 140);
+        //g2d.drawString(String.valueOf("TurnToken: " + turnToken), 900, 140);
         board.paint(g2d);      //Vẽ lại sân sau khi xử lí
         trongTai.paint(g2d);
         g2d.setColor(new Color(51, 153, 153));
-        board.paintScore(g2d, p1.currentScore, p2.currentScore);
+        board.paintScore(g2d, p1.soDanAnDuoc, p2.soDanAnDuoc, p1.soQuanAnDuoc, p2.soQuanAnDuoc);
 
         {
             g2d.setColor(Color.white);

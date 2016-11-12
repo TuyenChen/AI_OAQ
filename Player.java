@@ -17,6 +17,8 @@ public class Player extends JPanel {
     private boolean[] houseCoDan;  //Địa chỉ các nhà dân xem có dân bên trong không (1,2,3,4,5) ||  (10,9,8,7,6)
     static String playerName;
     public int currentScore;    //Điểm của người chơi = so Dân + anQUan*5
+    public int soDanAnDuoc;
+    public int soQuanAnDuoc;
     public int soDan;           
     public int anQuan;
     protected int direction;        // Hướng đi đã chọn       

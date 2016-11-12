@@ -110,8 +110,8 @@ class TrongTai {
                     this.game.turnToken = 0;
                     return;
                 }
-                if (checkBoardPlayer(this.game.turnToken)) {
-                    themDan(this.game.turnToken);
+                if (checkBoardPlayer(buocDi)) {
+                    themDan(buocDi);
                 }
                 resetBuocDi();
 
@@ -209,7 +209,6 @@ class TrongTai {
 //        }
 //        return false;
 //    }
-
     /**
      * Rai 1 Quan Neu So Quan Trong tay het Chuyen trang thai ban ve kiem tra
      */
@@ -273,8 +272,8 @@ class TrongTai {
         // Trong Truong hop khong du quan de rai khi het dan trong cac o
         // Score < 5
         // thi game over
-        if (this.game.turnToken != 0 && checkBoardPlayer(this.game.turnToken)) {
-            themDan(this.game.turnToken);
+        if (this.game.turnToken != 0 && checkBoardPlayer(buocDi)) {
+            themDan(buocDi);
         }
 
         resetBuocDi();
@@ -431,10 +430,13 @@ class TrongTai {
     public void AnDan(Step buocDi, int current) {
 
         if (isPlayer1(buocDi)) {
-            p1ShortLink.currentScore += layQuan(current);
-
+            int soQuanAn = layQuan(current);
+            p1ShortLink.currentScore += soQuanAn;
+            p1ShortLink.soDanAnDuoc += soQuanAn;
         } else {
-            p2ShortLink.currentScore += layQuan(current);
+            int soQuanAn = layQuan(current);
+            p2ShortLink.currentScore += soQuanAn;
+            p2ShortLink.soDanAnDuoc += soQuanAn;
         }
 
     }
@@ -445,33 +447,43 @@ class TrongTai {
         if (current == 0) {
             if (isPlayer1(buocDi)) {
                 p1ShortLink.currentScore = p1ShortLink.currentScore + q0ShortLink.getDanSo();
+                p1ShortLink.soDanAnDuoc += q0ShortLink.getDanSo();
                 q0ShortLink.setDanSo(0);
                 if (q0ShortLink.coQuan) {
                     q0ShortLink.coQuan = false;
                     p1ShortLink.currentScore += 10;
+                    p1ShortLink.soQuanAnDuoc++;
                 }
             } else {
                 p2ShortLink.currentScore = p2ShortLink.currentScore + q0ShortLink.getDanSo();
+                p2ShortLink.soDanAnDuoc += q0ShortLink.getDanSo();
                 q0ShortLink.setDanSo(0);
                 if (q0ShortLink.coQuan) {
                     q0ShortLink.coQuan = false;
                     p2ShortLink.currentScore += 10;
+                    p2ShortLink.soQuanAnDuoc++;
                 }
             }
         } // Quan 6
         else if (isPlayer1(buocDi)) {
             p1ShortLink.currentScore = p1ShortLink.currentScore + q6ShortLink.getDanSo();
+            p1ShortLink.soDanAnDuoc += q6ShortLink.getDanSo();
+
             q6ShortLink.setDanSo(0);
             if (q6ShortLink.coQuan) {
                 q6ShortLink.coQuan = false;
                 p1ShortLink.currentScore += 10;
+                p1ShortLink.soQuanAnDuoc++;
             }
         } else {
             p2ShortLink.currentScore = p2ShortLink.currentScore + q6ShortLink.getDanSo();
+            p2ShortLink.soDanAnDuoc += q6ShortLink.getDanSo();
+
             q6ShortLink.setDanSo(0);
             if (q6ShortLink.coQuan) {
                 q6ShortLink.coQuan = false;
                 p2ShortLink.currentScore += 10;
+                p2ShortLink.soQuanAnDuoc++;
             }
         }
 
@@ -497,11 +509,8 @@ class TrongTai {
      * @param token
      * @return true neu dung false neu sai
      */
-    public boolean nextTurnIsPlayer1(int token) {
-        if (token == 1) {
-            return true;
-        }
-        return false;
+    public boolean nextTurnIsPlayer1(Step buocDi) {
+        return buocDi.chose < 6;
     }
 
     // set token cho luot tiep theo
@@ -516,9 +525,9 @@ class TrongTai {
 
     // kiem tra 
     // neu so quan tren ban het thi them
-    public boolean checkBoardPlayer(int token) {
+    public boolean checkBoardPlayer(Step buocDi) {
         boolean allEmpty = true;
-        if (nextTurnIsPlayer1(token)) {
+        if (nextTurnIsPlayer1(buocDi)) {
             for (int i = 7; i <= 11; i++) {
                 if (houseShortLink[i].getDanSo() != 0) {
                     allEmpty = false;
@@ -539,25 +548,44 @@ class TrongTai {
      *
      * @param token
      */
-    public void themDan(int token) {
-        if (nextTurnIsPlayer1(token)) {
+    public void themDan(Step buocDi) {
+        if (nextTurnIsPlayer1(buocDi)) {
+
             for (int i = 7; i <= 11; i++) {
                 houseShortLink[i].setDanSo(1);
             }
             // Tru diem cua player
-            if (p1ShortLink.currentScore < 5) {
+            if ((p1ShortLink.currentScore < 5 && p1ShortLink.soQuanAnDuoc == 0) || (p2ShortLink.soDanAnDuoc < 5)) {
                 this.game.turnToken = 0;
+                return;
+            } else {
+                p1ShortLink.soQuanAnDuoc--;
+                p2ShortLink.soQuanAnDuoc++;
+                p2ShortLink.soDanAnDuoc -= 5;
+                p2ShortLink.currentScore += 5;
+                p1ShortLink.soDanAnDuoc += 5;
+                p1ShortLink.soDanAnDuoc -= 5;
+                p1ShortLink.currentScore -= 5;
             }
-            p1ShortLink.currentScore -= 5;
+
         } else {
             for (int i = 1; i <= 5; i++) {
                 houseShortLink[i].setDanSo(1);
             }
             // Tru diem cua player
-            if (p2ShortLink.currentScore < 5) {
+            if ((p2ShortLink.currentScore < 5 && p2ShortLink.soQuanAnDuoc == 0) || (p1ShortLink.soDanAnDuoc < 5)) {
                 this.game.turnToken = 0;
+                return;
+            } else {
+                p2ShortLink.soQuanAnDuoc--;
+                p1ShortLink.soQuanAnDuoc++;
+                p1ShortLink.soDanAnDuoc -= 5;
+                p1ShortLink.currentScore += 5;
+                p2ShortLink.soDanAnDuoc += 5;
+                p2ShortLink.soDanAnDuoc -= 5;
+                p2ShortLink.currentScore -= 5;
             }
-            p2ShortLink.currentScore -= 5;
+
         }
     }
 
