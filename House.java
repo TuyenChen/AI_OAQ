@@ -21,6 +21,7 @@ class House {
     public int houseID;
     public int danSo;
     boolean chosen;
+    public int chosenSide;  //Chon huong di 1 hoac -1
     Shape shape;
     public Shape chosenShape;
 
@@ -28,6 +29,8 @@ class House {
         x = 0;
         y = 0;
         houseID = 0;
+        chosen = false;
+        chosenSide = 0;
     }
 
     public void setHouse(int ID, int x, int y, int danSo) {
@@ -73,28 +76,35 @@ class House {
         g2d.setColor(Color.blue);
         //Vẽ Nhà Dân màu
         //g2d.draw(this.shape);           
-        if ((chosen)&&(houseID>6)) {
+        if ((chosen) && (houseID > 6)) {
             g2d.drawImage(Game.houseChosen, x - 100, y, null);
+            if (chosenSide == 1) {
+                g2d.drawImage(Game.houseChosenp1left, x - 100 + 10, y + 118, null);
+            } else if (chosenSide == -1) {
+                g2d.drawImage(Game.houseChosenp1right, x - 100 + 212, y + 123, null);
+            }
         }
-        if ((chosen)&&(houseID<6)) {
-            g2d.drawImage(Game.houseChosen_Bot, x - 100, y-100, null);
+        if ((chosen) && (houseID < 6)) {
+            g2d.drawImage(Game.houseChosen_Bot, x - 100, y - 100, null);
+            if (chosenSide == 1) {
+                g2d.drawImage(Game.houseChosenp2right, x -100 + 210, y -100 + 39, null);
+            } else if (chosenSide == -1) {
+                g2d.drawImage(Game.houseChosenp2left, x -100 + 18, y -100 + 41, null);
+            }
         }
         //Vẽ Dân trong nhà
         g2d.setColor(Color.gray);
-        if (danSo == 0); else {
-            if ((danSo <= 7) && (danSo >= 1)) {
-                g2d.drawImage(Game.soils[danSo], x, y, null);
-            } else {
-                g2d.drawImage(Game.soils[8], x, y, null);
-            }
+        if (danSo == 0); else if ((danSo <= 7) && (danSo >= 1)) {
+            g2d.drawImage(Game.soils[danSo], x, y, null);
+        } else {
+            g2d.drawImage(Game.soils[8], x, y, null);
         }
-        
-        
+
         //Vẽ số lượng dân
-        if(danSo > 5){
-        g2d.setColor(Color.gray);
-        g2d.setFont(new Font("Tw Cen MT Bold Italic", Font.BOLD, 20));
-        g2d.drawString(String.valueOf(danSo),x+5 , y+92);
+        if (danSo > 5) {
+            g2d.setColor(Color.gray);
+            g2d.setFont(new Font("Tw Cen MT Bold Italic", Font.BOLD, 20));
+            g2d.drawString(String.valueOf(danSo), x + 5, y + 92);
         }
     }
 }

@@ -1,6 +1,7 @@
 package testSQuares2;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Player extends JPanel {
     public int currentScore;    //Điểm của người chơi = so Dân + anQUan*5
     public int soDanAnDuoc;
     public int soQuanAnDuoc;
-    public int soDan;           
+    public int soDan;
     public int anQuan;
     protected int direction;        // Hướng đi đã chọn       
     protected int chosenHouse;     //CHọn nhà
@@ -27,7 +28,7 @@ public class Player extends JPanel {
     Step buocDi;
     int firstHouse;
     int lastHouse;
-    public  long timeFlag;
+    public long timeFlag;
     Random random;
 
     //Khởi tạo player
@@ -52,14 +53,18 @@ public class Player extends JPanel {
         direction = 0;
         this.buocDi.chose = 0;
         this.buocDi.direc = 0;
-        if (playerSide == 2)
-                for (int i = 1; i <= 5; i++) {
-                    board.houses[i].chosen=false;
-                }
-        if (playerSide == 1)
-                for (int i = 7; i <= 11; i++) {
-                    board.houses[i].chosen=false;
-                }
+        if (playerSide == 2) {
+            for (int i = 1; i <= 5; i++) {
+                board.houses[i].chosen = false;
+                board.houses[i].chosenSide = 0;
+            }
+        }
+        if (playerSide == 1) {
+            for (int i = 7; i <= 11; i++) {
+                board.houses[i].chosen = false;
+                board.houses[i].chosenSide = 0;
+            }
+        }
     }
 
     //Danh sach cac nha`
@@ -72,17 +77,17 @@ public class Player extends JPanel {
             this.lastHouse = 11;
         }
     }
-    
-    private void checkBoard(){
-        for (int i=1;i<=5;i++){
-          houseCoDan[i] = (board.houses[i].getDanSo() >0);
-        }  
-        for (int i=7;i<=11;i++){
-          houseCoDan[i] = (board.houses[i].getDanSo() >0);
-        }  
+
+    private void checkBoard() {
+        for (int i = 1; i <= 5; i++) {
+            houseCoDan[i] = (board.houses[i].getDanSo() > 0);
+        }
+        for (int i = 7; i <= 11; i++) {
+            houseCoDan[i] = (board.houses[i].getDanSo() > 0);
+        }
     }
-    
-    public void turn(long gameTime,Point mousePosition) {
+
+    public void turn(long gameTime, Point mousePosition) {
         /* Click chuột vào 1 nhà phía mình đưa vào biến chosenHouse. 
         * Hiện ra 2 nút <-  và -> ở phía trên
         * bấm phím VK_LEFT or VK_RIGHT đưa vào biến direction
@@ -100,7 +105,7 @@ public class Player extends JPanel {
             //luot cua p1
             if (playerSide == 2) {
                 for (int i = 1; i <= 5; i++) {
-                    if ((board.houses[i].getDanSo()>0) &&(board.houses[i].shape.contains(mousePosition))) {
+                    if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 1; j <= 5; j++) {
                             board.houses[j].chosen = false;
                         }
@@ -113,7 +118,7 @@ public class Player extends JPanel {
             //Luot cua p2
             if (playerSide == 1) {
                 for (int i = 7; i <= 11; i++) {
-                    if ((board.houses[i].getDanSo()>0) &&(board.houses[i].shape.contains(mousePosition))) {
+                    if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 7; j <= 11; j++) {
                             board.houses[j].chosen = false;
                         }
@@ -126,63 +131,97 @@ public class Player extends JPanel {
 
         //Bấm nút chọn nhà
         if (chosenHouse != 0) {
+            if (Canvas.mouseButtonState(1)) {
+                if (playerSide == 1) {
+                    if (new Rectangle(board.houses[chosenHouse].x -104 + 207, board.houses[chosenHouse].y + 128, 71, 32).contains(mousePosition)) {
+                        direction = -1;
+                        board.houses[chosenHouse].chosenSide = -1;
+                    }
+                    if (new Rectangle(board.houses[chosenHouse].x -100 + 16, board.houses[chosenHouse].y + 124, 75, 34).contains(mousePosition)) {
+                        direction = 1;
+                        board.houses[chosenHouse].chosenSide = 1;
+                    }
+                }
+                if (playerSide == 2) {
+                    if (new Rectangle(board.houses[chosenHouse].x -100 + 24, board.houses[chosenHouse].y -100  + 40, 69, 30).contains(mousePosition)) {
+                        direction = -1;
+                        board.houses[chosenHouse].chosenSide = -1;
+                    }
+                    if (new Rectangle(board.houses[chosenHouse].x -100 + 204, board.houses[chosenHouse].y -100 + 40, 77, 37).contains(mousePosition)) {
+                        direction = 1;
+                        board.houses[chosenHouse].chosenSide = 1;
+                    }
+                }
+            }
             if (Canvas.keyboardKeyState(KeyEvent.VK_LEFT)) {
                 if (this.playerSide == 1) {
                     direction = 1;
+                    board.houses[chosenHouse].chosenSide = 1;
                 } else {
                     direction = -1;
+                    board.houses[chosenHouse].chosenSide = -1;
                 }
             }
             if (Canvas.keyboardKeyState(KeyEvent.VK_RIGHT)) {
                 if (this.playerSide == 1) {
                     direction = -1;
+                    board.houses[chosenHouse].chosenSide = -1;
                 } else {
                     direction = 1;
+                    board.houses[chosenHouse].chosenSide = 1;
                 }
             }
         }
 
         this.buocDi.chose = chosenHouse;
         this.buocDi.direc = direction;
-        
+
         if (direction != 0) {
             giveTurnToken(playerSide);
         }
 
     }
 
-    
     //Auto khi qua thoi gian
-    public void auto(){
-        int temp=0;
-        if (playerSide == 1){
-            while (true){                     //Lap lai viec random den khi dc nha` co dan
-                temp = 7+random.nextInt(5);  //Random tu 7 den 11
-                if (board.houses[temp].getDanSo()>0) break;
+    public void auto() {
+        if (chosenHouse != 0)
+            board.houses[chosenHouse].chosen = false;
+        int temp = 0;
+        if (playerSide == 1) {
+            while (true) {                     //Lap lai viec random den khi dc nha` co dan
+                temp = 7 + random.nextInt(5);  //Random tu 7 den 11
+                if (board.houses[temp].getDanSo() > 0) {
+                    break;
+                }
             }
         }
-        if (playerSide == 2){
-            while(true){
-                temp = 1 +random.nextInt(5);  //Random tu 1 den 5
-                if (board.houses[temp].getDanSo()>0) break;
+        if (playerSide == 2) {
+            while (true) {
+                temp = 1 + random.nextInt(5);  //Random tu 1 den 5
+                if (board.houses[temp].getDanSo() > 0) {
+                    break;
+                }
             }
         }
         this.buocDi.chose = temp;
-        this.buocDi.direc = 1 - (random.nextInt(2)*2); // Random 1 hoac -1
+        this.buocDi.direc = 1 - (random.nextInt(2) * 2); // Random 1 hoac -1
+        board.houses[this.buocDi.chose].chosen = true;
+        board.houses[this.buocDi.chose].chosenSide = this.buocDi.direc;
         giveTurnToken(playerSide);
     }
+
     //Tra luot cho trong tai
-    public void giveTurnToken(int playerSide){
+    public void giveTurnToken(int playerSide) {
         if (playerSide == 1) {
-                game.turnToken = 3;
-            } else {
-                game.turnToken = 4;
-            }
+            game.turnToken = 3;
+        } else {
+            game.turnToken = 4;
+        }
     }
-    
+
     //Trả về bước đi
     public Step getStep() {
         return this.buocDi;
     }
-    
+
 }

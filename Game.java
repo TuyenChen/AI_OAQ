@@ -1,5 +1,7 @@
 package testSQuares2;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -27,13 +29,14 @@ public class Game {
     private BufferedImage background;
     public static BufferedImage[] soils;
     public static BufferedImage quan0, quan6, anduoc1quan, anduoc2quan;
-    public static BufferedImage houseChosen, houseChosen_Bot;
+    public static BufferedImage houseChosen, houseChosen_Bot,houseChosenp1left,houseChosenp2left,houseChosenp1right,houseChosenp2right;
     public static BufferedImage ava_bot, ava_player;
     public static BufferedImage voSoi, choTayXuong, namTay;
     public static BufferedImage dieuCay, dieuCay1, dieuCay2;
     public static BufferedImage dieuCayGiua[];
     public int index_ani;
-
+    public static final AudioClip GAMEOVER = Applet.newAudioClip(testsquares2.Sound.class.getResource("resources/sounds/gameover.wav"));
+    public static final AudioClip INGAME = Applet.newAudioClip(testsquares2.Sound.class.getResource("resources/sounds/ingame.wav"));
     public Game() {
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
 
@@ -55,6 +58,7 @@ public class Game {
      * Set variables and objects for the game.
      */
     private void Initialize() {
+        INGAME.loop();
         this.board = new Board();
         p1 = new Player(this, "Tuyen", 1);
         p2 = new Player(this, "Dung", 2);
@@ -116,11 +120,23 @@ public class Game {
             URL soilsImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/soils.png");
             soils[8] = ImageIO.read(soilsImgUrl);
 
-            URL chosenImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen.png");
+            URL chosenImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosen.png");
             houseChosen = ImageIO.read(chosenImgUrl);
+            
+            URL chosenp1leftImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp1left.png");
+            houseChosenp1left = ImageIO.read(chosenp1leftImgUrl);
+            
+            URL chosenp1rightImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp1right.png");
+            houseChosenp1right = ImageIO.read(chosenp1rightImgUrl);
 
-            URL chosen_BotImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen_Bot.png");
+            URL chosen_BotImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosen_Bot.png");
             houseChosen_Bot = ImageIO.read(chosen_BotImgUrl);
+            
+            URL chosenp2leftImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp2left.png");
+            houseChosenp2left = ImageIO.read(chosenp2leftImgUrl);
+            
+            URL chosenp2rightImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp2right.png");
+            houseChosenp2right = ImageIO.read(chosenp2rightImgUrl);
 
             URL voSoiImgUrl = this.getClass().getResource("/testsquares2/resources/images/voSoi.png");
             voSoi = ImageIO.read(voSoiImgUrl);
@@ -272,7 +288,7 @@ public class Game {
         if(index_ani==6)g2d.drawImage(dieuCayGiua[6], 927, 319, null);
         if(index_ani==7)g2d.drawImage(dieuCayGiua[7], 935, 296, null);
         try {
-            Thread.sleep(100);
+            Thread.sleep(10);
         } catch (Exception e) {
         }
         if (index_ani != 7) {
@@ -291,7 +307,7 @@ public class Game {
         if(index_ani==6)g2d.drawImage(dieuCayGiua[6], 927, 319, null);
         if(index_ani==7)g2d.drawImage(dieuCayGiua[7], 935, 296, null);
         try {
-            Thread.sleep(100);
+            Thread.sleep(110);
         } catch (Exception e) {
         }
         if (index_ani != 1) {

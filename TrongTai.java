@@ -96,7 +96,7 @@ class TrongTai {
         this.count = 0;
 
         try {
-            Thread.sleep(200);
+            Thread.sleep(0);
         } catch (Exception e) {
         }
         // kiem tra trang thai cua trong tai
@@ -108,6 +108,7 @@ class TrongTai {
                 setTurnToken(buocDi);
                 if (!checkContinueGame(board)) {
                     this.game.turnToken = 0;
+                    tinhDiem();
                     return;
                 }
                 if (checkBoardPlayer(buocDi)) {
@@ -188,7 +189,7 @@ class TrongTai {
     public boolean thaoTacLayQuan() {
         if (this.thaoTacLay < 3) {
             try {
-                Thread.sleep(300);
+                Thread.sleep(0);
             } catch (Exception e) {
             }
             this.thaoTacLay++;
@@ -495,6 +496,16 @@ class TrongTai {
         }
         return true;
     }
+    
+    public void tinhDiem() {
+        for (int i = 1; i <= 5; i++) {
+            p1ShortLink.soDanAnDuoc += houseShortLink[i].getDanSo();
+        }
+        
+        for (int i = 7; i <= 11; i++) {
+            p2ShortLink.soDanAnDuoc += houseShortLink[i].getDanSo();
+        }
+    }
 
     public boolean isPlayer1(Step buocDi) {
         if (buocDi.chose > 6) {
@@ -657,7 +668,15 @@ class TrongTai {
             } else if (this.selected < 6 && this.selected != 0) {
                 this.x -= 4;
             } else {
-                setToaDo();
+                if (this.selected == 0) {
+                    this.y += 4;
+                    this.x = game.board.START_X - (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+                }
+                else {
+                    this.y -= 4;
+                    this.x = game.board.START_X + 400 + (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+                }
+//                setToaDo();
             }
         } else {
             this.count++;
@@ -666,7 +685,15 @@ class TrongTai {
             } else if (this.selected < 6 && this.selected != 0) {
                 this.x += 4;
             } else {
-                setToaDo();
+                if (this.selected == 0) {
+                    this.y -= 4;
+                    this.x = game.board.START_X - (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+                }
+                else {
+                    this.y += 4;
+                    this.x = game.board.START_X + 400 + (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+                }
+//                setToaDo();
             }
         }
     }

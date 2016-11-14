@@ -204,9 +204,14 @@ public class Framework extends Canvas {
                     gameMenu();
                     break;
                 case GAMEOVER:
+                    if (gameOverCount == 0) {
+                        Game.INGAME.stop();
+                        Game.GAMEOVER.loop();
+                    }
                     gameOverCount++;
                     if (Canvas.mouseButtonState(MouseEvent.BUTTON1) && (gameOverCount > GAME_FPS * 9 / 2)) {
                         if (new Rectangle((frameWidth - ketQua.getWidth()) / 2 + (ketQua.getWidth() - btn_playagain.getWidth()) / 2, (frameHeight - ketQua.getHeight()) / 2 + 380, btn_playagain.getWidth(), btn_playagain.getHeight()).contains(mousePosition())) {
+                            Game.GAMEOVER.stop();
                             try {
                                 Thread.sleep(300);
                             } catch (InterruptedException ex) {
@@ -306,14 +311,14 @@ public class Framework extends Canvas {
                 g2d.setFont(new Font("SansSerif", Font.PLAIN, 90));
                 g2d.drawImage(ketQua, xketQua, yketQua, null);
                 if (gameOverCount > GAME_FPS) {
-                    g2d.drawString(String.valueOf(game.p1.currentScore), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() / 2 - 7);
-                    g2d.drawString(String.valueOf(game.p2.currentScore), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() * 3 / 4 - 15);
+                    g2d.drawString(String.valueOf(game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() / 2 - 7);
+                    g2d.drawString(String.valueOf(game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() * 3 / 4 - 15);
                 }
                 //Xác nhận ng chiến thắng
                 if (gameOverCount > GAME_FPS * 5 / 2) {
                     if (game.p1.currentScore > game.p2.currentScore) {
                         g2d.drawImage(victory_icon, xketQua + 565, yketQua + 165, null);
-                    } else {
+                    } else if (game.p1.currentScore < game.p2.currentScore) {
                         g2d.drawImage(victory_icon, xketQua + 565, yketQua + 272, null);
                     }
                 }
@@ -321,7 +326,7 @@ public class Framework extends Canvas {
                 if (gameOverCount > GAME_FPS * 7 / 2) {
                     if (game.p1.currentScore > game.p2.currentScore) {
                         g2d.drawImage(lose_icon, xketQua + 575, yketQua + 269, null);
-                    } else {
+                    } else if (game.p1.currentScore < game.p2.currentScore) {
                         g2d.drawImage(lose_icon, xketQua + 575, yketQua + 128, null);
                     }
                 }
