@@ -25,7 +25,7 @@ class TrongTai {
     private final int DOI = 5;
 
     private final int NUMBER_IMAGE = 25;
-
+    
     private Game game;
     public Player player;
     public Board board;
@@ -98,7 +98,7 @@ class TrongTai {
         this.count = 0;
 
         try {
-            Thread.sleep(300);
+            Thread.sleep(0);
         } catch (Exception e) {
         }
         // kiem tra trang thai cua trong tai
@@ -107,6 +107,8 @@ class TrongTai {
             case DUNG:
                 this.state = DOI;
                 this.eating = false;
+                game.history.add(new BoardState(game.board, buocDi));
+                System.out.println(game.history.stack.size());
                 setTurnToken(buocDi);
                 if (!checkContinueGame(board)) {
                     this.game.turnToken = 0;
@@ -198,7 +200,7 @@ class TrongTai {
 
         return;
     }
-
+ 
     public boolean thaoTacLayQuan() {
         if (this.thaoTacLay < 3) {
             try {
@@ -745,7 +747,7 @@ class TrongTai {
     }
 
     public void paint(Graphics2D g2d) {
-
+        
         if (this.state == DOI) {
             if (this.thaoTacLay == 1) {
                 g2d.drawImage(Game.voSoi, this.x, this.y - 50, null);
