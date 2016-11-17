@@ -24,19 +24,20 @@ public class Game {
     public int lastToken; //Kiem tra sang luot khac
     private long timeCount;
     public long timeFlag;
-    public final int TIME_LIMIT = 1;
+    public final int TIME_LIMIT = 10;
     public final int TIME_DELAY = 10;
     private BufferedImage background;
     public static BufferedImage[] soils;
     public static BufferedImage quan0, quan6, anduoc1quan, anduoc2quan;
-    public static BufferedImage houseChosen, houseChosen_Bot,houseChosenp1left,houseChosenp2left,houseChosenp1right,houseChosenp2right;
-    public static BufferedImage ava_bot, ava_player;
-    public static BufferedImage voSoi, choTayXuong, namTay;
+    public static BufferedImage houseChosen, houseChosen_Bot, houseChosenp1left, houseChosenp2left, houseChosenp1right, houseChosenp2right;
+    public static BufferedImage ava_bot, ava_player, turn_focus;
+    public static BufferedImage voSoi, choTayXuong, namTay, tayKhong, voSoi1, voSoi2;
     public static BufferedImage dieuCay, dieuCay1, dieuCay2;
     public static BufferedImage dieuCayGiua[];
     public int index_ani;
     public static final AudioClip GAMEOVER = Applet.newAudioClip(testsquares2.Sound.class.getResource("resources/sounds/gameover.wav"));
     public static final AudioClip INGAME = Applet.newAudioClip(testsquares2.Sound.class.getResource("resources/sounds/ingame.wav"));
+
     public Game() {
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
 
@@ -58,10 +59,13 @@ public class Game {
      * Set variables and objects for the game.
      */
     private void Initialize() {
-        INGAME.loop();
+        if (Framework.music_on) {
+            INGAME.loop();
+        }
         this.board = new Board();
         p1 = new Player(this, "Tuyen", 1);
         p2 = new Player(this, "Dung", 2);
+//        p1.soDanAnDuoc = 6;
         trongTai = new TrongTai(this);
         turnToken = 1;
         soils = new BufferedImage[10];
@@ -78,11 +82,14 @@ public class Game {
             URL bgImgUrl = this.getClass().getResource("/testsquares2/resources/images/background.jpg");
             background = ImageIO.read(bgImgUrl);
 
-            URL ava_botImgUrl = this.getClass().getResource("/testsquares2/resources/images/ava_bot.png");
+            URL ava_botImgUrl = this.getClass().getResource("/testsquares2/resources/images/avatar/ava_bot.png");
             ava_bot = ImageIO.read(ava_botImgUrl);
 
-            URL ava_playerImgUrl = this.getClass().getResource("/testsquares2/resources/images/ava_player.png");
+            URL ava_playerImgUrl = this.getClass().getResource("/testsquares2/resources/images/avatar/ava_player.png");
             ava_player = ImageIO.read(ava_playerImgUrl);
+
+            URL turn_focusImgUrl = this.getClass().getResource("/testsquares2/resources/images/avatar/turn_focus.png");
+            turn_focus = ImageIO.read(turn_focusImgUrl);
 
             URL quan0ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/quan0.png");
             quan0 = ImageIO.read(quan0ImgUrl);
@@ -92,10 +99,10 @@ public class Game {
 
             URL anduoc1quanImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/anduoc1quan.png");
             anduoc1quan = ImageIO.read(anduoc1quanImgUrl);
-            
+
             URL anduoc2quanImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/anduoc2quan.png");
             anduoc2quan = ImageIO.read(anduoc2quanImgUrl);
-            
+
             URL soil_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/soil/soil_1.png");
             soils[1] = ImageIO.read(soil_1ImgUrl);
 
@@ -122,30 +129,39 @@ public class Game {
 
             URL chosenImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosen.png");
             houseChosen = ImageIO.read(chosenImgUrl);
-            
+
             URL chosenp1leftImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp1left.png");
             houseChosenp1left = ImageIO.read(chosenp1leftImgUrl);
-            
+
             URL chosenp1rightImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp1right.png");
             houseChosenp1right = ImageIO.read(chosenp1rightImgUrl);
 
             URL chosen_BotImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosen_Bot.png");
             houseChosen_Bot = ImageIO.read(chosen_BotImgUrl);
-            
+
             URL chosenp2leftImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp2left.png");
             houseChosenp2left = ImageIO.read(chosenp2leftImgUrl);
-            
+
             URL chosenp2rightImgUrl = this.getClass().getResource("/testsquares2/resources/images/chosen/chosenp2right.png");
             houseChosenp2right = ImageIO.read(chosenp2rightImgUrl);
 
-            URL voSoiImgUrl = this.getClass().getResource("/testsquares2/resources/images/voSoi.png");
+            URL voSoiImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/voSoi.png");
             voSoi = ImageIO.read(voSoiImgUrl);
 
-            URL choTayXuongImgUrl = this.getClass().getResource("/testsquares2/resources/images/choTayXuong.png");
+            URL choTayXuongImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/choTayXuong.png");
             choTayXuong = ImageIO.read(choTayXuongImgUrl);
 
-            URL namTayImgUrl = this.getClass().getResource("/testsquares2/resources/images/namTay.png");
+            URL namTayImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/namTay.png");
             namTay = ImageIO.read(namTayImgUrl);
+            
+            URL tayKhongImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/taykhong.png");
+            tayKhong = ImageIO.read(tayKhongImgUrl);
+
+            URL voSoi1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/tayvo1.png");
+            voSoi1 = ImageIO.read(voSoi1ImgUrl);
+
+            URL voSoi2ImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/tayvo2.png");
+            voSoi2 = ImageIO.read(voSoi2ImgUrl);
 
             URL dieuCay_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucay_1.png");
             dieuCay1 = ImageIO.read(dieuCay_1ImgUrl);
@@ -161,16 +177,16 @@ public class Game {
 
             URL dieuCayGiua_3ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucaygiua_3.png");
             dieuCayGiua[3] = ImageIO.read(dieuCayGiua_3ImgUrl);
-            
+
             URL dieuCayGiua_4ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucaygiua_4.png");
             dieuCayGiua[4] = ImageIO.read(dieuCayGiua_4ImgUrl);
-            
+
             URL dieuCayGiua_5ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucaygiua_5.png");
             dieuCayGiua[5] = ImageIO.read(dieuCayGiua_5ImgUrl);
-            
+
             URL dieuCayGiua_6ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucaygiua_6.png");
             dieuCayGiua[6] = ImageIO.read(dieuCayGiua_6ImgUrl);
-            
+
             URL dieuCayGiua_7ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucaygiua_7.png");
             dieuCayGiua[7] = ImageIO.read(dieuCayGiua_7ImgUrl);
 
@@ -263,10 +279,12 @@ public class Game {
         //Vẽ điếu cày
         switch (turnToken) {
             case 1:
+                g2d.drawImage(turn_focus, 518 - 20, 557 - 20, null);
             case 3:
                 g2d.drawImage(dieuCay1, 953, 365, null);
                 break;
             case 2:
+                g2d.drawImage(turn_focus, 599 - 20, 84 - 20, null);
             case 4:
                 g2d.drawImage(dieuCay2, 949, 277, null);
                 break;
@@ -280,15 +298,29 @@ public class Game {
     }
 
     public void animation_1(Graphics2D g2d) {
-        if(index_ani==1)g2d.drawImage(dieuCayGiua[1], 935, 366, null);
-        if(index_ani==2)g2d.drawImage(dieuCayGiua[2], 928, 375 , null);
-        if(index_ani==3)g2d.drawImage(dieuCayGiua[3], 922, 375, null);
-        if(index_ani==4)g2d.drawImage(dieuCayGiua[4], 921, 369, null);
-        if(index_ani==5)g2d.drawImage(dieuCayGiua[5], 922, 346, null);
-        if(index_ani==6)g2d.drawImage(dieuCayGiua[6], 927, 319, null);
-        if(index_ani==7)g2d.drawImage(dieuCayGiua[7], 935, 296, null);
+        if (index_ani == 1) {
+            g2d.drawImage(dieuCayGiua[1], 935, 366, null);
+        }
+        if (index_ani == 2) {
+            g2d.drawImage(dieuCayGiua[2], 928, 375, null);
+        }
+        if (index_ani == 3) {
+            g2d.drawImage(dieuCayGiua[3], 922, 375, null);
+        }
+        if (index_ani == 4) {
+            g2d.drawImage(dieuCayGiua[4], 921, 369, null);
+        }
+        if (index_ani == 5) {
+            g2d.drawImage(dieuCayGiua[5], 922, 346, null);
+        }
+        if (index_ani == 6) {
+            g2d.drawImage(dieuCayGiua[6], 927, 319, null);
+        }
+        if (index_ani == 7) {
+            g2d.drawImage(dieuCayGiua[7], 935, 296, null);
+        }
         try {
-            Thread.sleep(10);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         if (index_ani != 7) {
@@ -299,13 +331,27 @@ public class Game {
     }
 
     public void animation_2(Graphics2D g2d) {
-        if(index_ani==1)g2d.drawImage(dieuCayGiua[1], 935, 366, null);
-        if(index_ani==2)g2d.drawImage(dieuCayGiua[2], 928, 375 , null);
-        if(index_ani==3)g2d.drawImage(dieuCayGiua[3], 922, 375, null);
-        if(index_ani==4)g2d.drawImage(dieuCayGiua[4], 921, 369, null);
-        if(index_ani==5)g2d.drawImage(dieuCayGiua[5], 922, 346, null);
-        if(index_ani==6)g2d.drawImage(dieuCayGiua[6], 927, 319, null);
-        if(index_ani==7)g2d.drawImage(dieuCayGiua[7], 935, 296, null);
+        if (index_ani == 1) {
+            g2d.drawImage(dieuCayGiua[1], 935, 366, null);
+        }
+        if (index_ani == 2) {
+            g2d.drawImage(dieuCayGiua[2], 928, 375, null);
+        }
+        if (index_ani == 3) {
+            g2d.drawImage(dieuCayGiua[3], 922, 375, null);
+        }
+        if (index_ani == 4) {
+            g2d.drawImage(dieuCayGiua[4], 921, 369, null);
+        }
+        if (index_ani == 5) {
+            g2d.drawImage(dieuCayGiua[5], 922, 346, null);
+        }
+        if (index_ani == 6) {
+            g2d.drawImage(dieuCayGiua[6], 927, 319, null);
+        }
+        if (index_ani == 7) {
+            g2d.drawImage(dieuCayGiua[7], 935, 296, null);
+        }
         try {
             Thread.sleep(110);
         } catch (Exception e) {
@@ -316,13 +362,5 @@ public class Game {
             turnToken = 1;
         }
     }
-//    public void veTatCaDieuCay(Graphics2D g2d){
-//        g2d.drawImage(dieuCayGiua[1], 935, 366, null);
-//        g2d.drawImage(dieuCayGiua[2], 928, 375 , null);
-//        g2d.drawImage(dieuCayGiua[3], 922, 375, null);
-//        g2d.drawImage(dieuCayGiua[4], 921, 369, null);
-//        g2d.drawImage(dieuCayGiua[5], 922, 346, null);
-//        g2d.drawImage(dieuCayGiua[6], 927, 319, null);
-//        g2d.drawImage(dieuCayGiua[7], 935, 296, null);
-//    }
+
 }

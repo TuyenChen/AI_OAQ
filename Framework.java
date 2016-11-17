@@ -71,20 +71,24 @@ public class Framework extends Canvas {
     private long lastTime;
     //Use for state GameOVer
     private long gameOverCount;
+    int p1ScoreCount = 0;
+    int p2ScoreCount = 0;
+
+    public static boolean music_on;
+
     //Img background menu
     private BufferedImage bg_introduce;
 
-    public static BufferedImage pause;
+    public static BufferedImage btn_pause, pause;
     //Menu chinh
     private BufferedImage bg_menu;
-    private BufferedImage btn_start;
-    private BufferedImage btn_rules;
-    private BufferedImage btn_options;
-    private BufferedImage btn_exit;
-    private BufferedImage ketQua, victory_icon, lose_icon, btn_playagain;
+    private BufferedImage btn_options, btn_exit, btn_rules, btn_start;
+    private BufferedImage sound_option, btn_sound_on, btn_sound_off;
+    private BufferedImage ketQua, victory_icon, lose_icon, btn_playagain, btn_menu;
     int xketQua, yketQua;
 
     //Luat choi = hinh anh
+    private BufferedImage btn_previous, btn_back, btn_next;
     public BufferedImage[] rules;
     private int pageRule;
     // The actual game
@@ -111,9 +115,10 @@ public class Framework extends Canvas {
      * be set in Game.java.
      */
     private void Initialize() {
-        rules = new BufferedImage[8];
+        rules = new BufferedImage[9];
         pageRule = 1;
         gameOverCount = 0;
+        music_on = true;
     }
 
     private void preStarting() {
@@ -147,25 +152,49 @@ public class Framework extends Canvas {
             URL exitImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_exit.png");
             btn_exit = ImageIO.read(exitImgUrl);
 
-            for (int i = 1; i <= 7; i++) {
-                URL tempRuleImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/rule_" + i + ".jpg");
+            for (int i = 1; i <= 8; i++) {
+                URL tempRuleImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/rule_" + i + ".png");
                 rules[i] = ImageIO.read(tempRuleImgUrl);
             }
+
+            URL btn_backImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_back.png");
+            btn_back = ImageIO.read(btn_backImgUrl);
+
+            URL btn_previousImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_previous.png");
+            btn_previous = ImageIO.read(btn_previousImgUrl);
+
+            URL btn_nextImgUrl = this.getClass().getResource("/testsquares2/resources/images/menu/btn_next.png");
+            btn_next = ImageIO.read(btn_nextImgUrl);
+
+            URL btn_pauseImgUrl = this.getClass().getResource("/testsquares2/resources/images/btn_pause.png");
+            btn_pause = ImageIO.read(btn_pauseImgUrl);
 
             URL pauseImgUrl = this.getClass().getResource("/testsquares2/resources/images/pause.png");
             pause = ImageIO.read(pauseImgUrl);
 
-            URL ketquaImgUrl = this.getClass().getResource("/testsquares2/resources/images/ketqua.png");
+            URL ketquaImgUrl = this.getClass().getResource("/testsquares2/resources/images/gameOver/ketqua.png");
             ketQua = ImageIO.read(ketquaImgUrl);
 
-            URL victoryImgUrl = this.getClass().getResource("/testsquares2/resources/images/victory.png");
+            URL victoryImgUrl = this.getClass().getResource("/testsquares2/resources/images/gameOver/victory.png");
             victory_icon = ImageIO.read(victoryImgUrl);
 
-            URL loseImgUrl = this.getClass().getResource("/testsquares2/resources/images/lose.png");
+            URL loseImgUrl = this.getClass().getResource("/testsquares2/resources/images/gameOver/lose.png");
             lose_icon = ImageIO.read(loseImgUrl);
 
-            URL playagainImgUrl = this.getClass().getResource("/testsquares2/resources/images/playagain.png");
+            URL playagainImgUrl = this.getClass().getResource("/testsquares2/resources/images/gameOver/playagain.png");
             btn_playagain = ImageIO.read(playagainImgUrl);
+
+            URL menuOverImgUrl = this.getClass().getResource("/testsquares2/resources/images/gameOver/menu.png");
+            btn_menu = ImageIO.read(menuOverImgUrl);
+
+            URL sound_optionImgUrl = this.getClass().getResource("/testsquares2/resources/images/option/sound_option.png");
+            sound_option = ImageIO.read(sound_optionImgUrl);
+
+            URL sound_onImgUrl = this.getClass().getResource("/testsquares2/resources/images/option/sound_option_on.png");
+            btn_sound_on = ImageIO.read(sound_onImgUrl);
+
+            URL sound_offImgUrl = this.getClass().getResource("/testsquares2/resources/images/option/sound_option_off.png");
+            btn_sound_off = ImageIO.read(sound_offImgUrl);
         } catch (IOException ex) {
             Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, "Khong load dc anh from Loadcontent", ex);
         }
@@ -199,34 +228,25 @@ public class Framework extends Canvas {
                     game.UpdateGame(gameTime, mousePosition());
 
                     lastTime = System.nanoTime();
+
+                    if (Canvas.mouseButtonState(1)) {
+                        if (new Rectangle(frameWidth - btn_pause.getWidth() - 20, 10, btn_pause.getWidth(), btn_pause.getHeight()).contains(mousePosition())) {
+                            gameState = GameState.PAUSE;
+                        }
+                    }
                     break;
                 case MAIN_MENU:
                     gameMenu();
                     break;
                 case GAMEOVER:
-                    if (gameOverCount == 0) {
-                        Game.INGAME.stop();
-                        Game.GAMEOVER.loop();
-                    }
-                    gameOverCount++;
-                    if (Canvas.mouseButtonState(MouseEvent.BUTTON1) && (gameOverCount > GAME_FPS * 9 / 2)) {
-                        if (new Rectangle((frameWidth - ketQua.getWidth()) / 2 + (ketQua.getWidth() - btn_playagain.getWidth()) / 2, (frameHeight - ketQua.getHeight()) / 2 + 380, btn_playagain.getWidth(), btn_playagain.getHeight()).contains(mousePosition())) {
-                            Game.GAMEOVER.stop();
-                            try {
-                                Thread.sleep(300);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            gameState = GameState.MAIN_MENU;
-                        }
-                    }
+                    gameover();
                     break;
                 case PAUSE:
                     pause();
                     break;
 
                 case OPTIONS:
-                    //Tuy chinh am thanh
+                    option();
                     break;
                 case RULES:
                     gameRules();
@@ -295,6 +315,7 @@ public class Framework extends Canvas {
         switch (gameState) {
             case PLAYING:
                 game.Draw(g2d, mousePosition(), gameTime);
+                g2d.drawImage(btn_pause, frameWidth - btn_pause.getWidth() - 20, 10, null);
                 break;
 
             case MAIN_MENU:
@@ -311,27 +332,38 @@ public class Framework extends Canvas {
                 g2d.setFont(new Font("SansSerif", Font.PLAIN, 90));
                 g2d.drawImage(ketQua, xketQua, yketQua, null);
                 if (gameOverCount > GAME_FPS) {
-                    g2d.drawString(String.valueOf(game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() / 2 - 7);
-                    g2d.drawString(String.valueOf(game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() * 3 / 4 - 15);
+                    if (gameOverCount % 3 == 0) {
+                        if (p1ScoreCount < (game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5)) {
+                            p1ScoreCount++;
+                        }
+                        if (p2ScoreCount < (game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5)) {
+                            p2ScoreCount++;
+                        }
+                    }
+//                    g2d.drawString(String.valueOf(game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() / 2 - 7);
+//                    g2d.drawString(String.valueOf(game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() * 3 / 4 - 15);
+                    g2d.drawString(String.valueOf(p1ScoreCount), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() / 2 - 7);
+                    g2d.drawString(String.valueOf(p2ScoreCount), xketQua + ketQua.getWidth() / 2 + 30, yketQua + ketQua.getHeight() * 3 / 4 - 15);
                 }
                 //Xác nhận ng chiến thắng
-                if (gameOverCount > GAME_FPS * 5 / 2) {
-                    if (game.p1.currentScore > game.p2.currentScore) {
+                if (gameOverCount > GAME_FPS * 7 / 2) {
+                    if (game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5 > game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5) {
                         g2d.drawImage(victory_icon, xketQua + 565, yketQua + 165, null);
-                    } else if (game.p1.currentScore < game.p2.currentScore) {
+                    } else if ((game.p1.soDanAnDuoc + game.p1.soQuanAnDuoc * 5) < (game.p2.soDanAnDuoc + game.p2.soQuanAnDuoc * 5)) {
                         g2d.drawImage(victory_icon, xketQua + 565, yketQua + 272, null);
                     }
                 }
                 //Vẽ mặt thua
-                if (gameOverCount > GAME_FPS * 7 / 2) {
+                if (gameOverCount > GAME_FPS * 10 / 2) {
                     if (game.p1.currentScore > game.p2.currentScore) {
-                        g2d.drawImage(lose_icon, xketQua + 575, yketQua + 269, null);
+                        g2d.drawImage(lose_icon, xketQua + 575, yketQua + 247, null);
                     } else if (game.p1.currentScore < game.p2.currentScore) {
                         g2d.drawImage(lose_icon, xketQua + 575, yketQua + 128, null);
                     }
                 }
-                if (gameOverCount > GAME_FPS * 9 / 2) {
-                    g2d.drawImage(btn_playagain, xketQua + (ketQua.getWidth() - btn_playagain.getWidth()) / 2, yketQua + 380, null);
+                if (gameOverCount > GAME_FPS * 12 / 2) {
+                    g2d.drawImage(btn_playagain, xketQua + (ketQua.getWidth() - btn_playagain.getWidth()) / 4, yketQua + 380, null);
+                    g2d.drawImage(btn_menu, xketQua + (ketQua.getWidth() - btn_menu.getWidth()) * 3 / 4, yketQua + 380, null);
                 }
                 break;
             case PAUSE:
@@ -341,9 +373,24 @@ public class Framework extends Canvas {
 
             case OPTIONS:
                 //Sound UI
+                g2d.drawImage(bg_menu, 0, 0, frameWidth, frameHeight, null);
+                g2d.drawImage(btn_back, 0, 0, null);
+                g2d.drawImage(sound_option, (frameWidth - sound_option.getWidth()) / 2, (frameHeight - sound_option.getHeight()) / 2, null);
+                if (music_on) {
+                    g2d.drawImage(btn_sound_on, (frameWidth + sound_option.getWidth()) / 2 + 50, (frameHeight - sound_option.getHeight()) / 2 + 27, null);
+                } else {
+                    g2d.drawImage(btn_sound_off, (frameWidth + sound_option.getWidth()) / 2 + 50, (frameHeight - sound_option.getHeight()) / 2 + 27, null);
+                }
                 break;
             case RULES:
                 g2d.drawImage(rules[pageRule], 0, 0, null);
+                g2d.drawImage(btn_back, 0, 0, null);
+                if (pageRule > 1) {
+                    g2d.drawImage(btn_previous, 10, frameHeight - btn_previous.getHeight() - 10, null);
+                }
+                if (pageRule < 8) {
+                    g2d.drawImage(btn_next, frameWidth - btn_next.getWidth() - 10, frameHeight - btn_next.getHeight() - 10, null);
+                }
                 break;
             case GAME_CONTENT_LOADING:
             case STARTING:
@@ -379,6 +426,31 @@ public class Framework extends Canvas {
         preState = GameState.MAIN_MENU;
     }
 
+    private void gameover() {
+        if ((gameOverCount == 0) && music_on) {
+            Game.INGAME.stop();
+            Game.GAMEOVER.loop();
+        }
+        gameOverCount++;
+        if (Canvas.mouseButtonState(MouseEvent.BUTTON1) && (gameOverCount > GAME_FPS * 9 / 2)) {
+            if (new Rectangle(xketQua + (ketQua.getWidth() - btn_playagain.getWidth()) / 4, yketQua + 380, btn_playagain.getWidth(), btn_playagain.getHeight()).contains(mousePosition())) {
+                Game.GAMEOVER.stop();
+                newGame();
+            }
+        }
+        if (Canvas.mouseButtonState(MouseEvent.BUTTON1) && (gameOverCount > GAME_FPS * 9 / 2)) {
+            if (new Rectangle(xketQua + (ketQua.getWidth() - btn_menu.getWidth()) * 3 / 4, yketQua + 380, btn_menu.getWidth(), btn_menu.getHeight()).contains(mousePosition())) {
+                Game.GAMEOVER.stop();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                gameState = GameState.MAIN_MENU;
+            }
+        }
+    }
+
     //Luật chơi
     private void gameRules() {
         if (Canvas.keyboardKeyState(KeyEvent.VK_LEFT) && (pageRule > 1)) {
@@ -389,12 +461,56 @@ public class Framework extends Canvas {
             } catch (InterruptedException ex) {
             }
         }
-        if (Canvas.keyboardKeyState(KeyEvent.VK_RIGHT) && (pageRule < 7)) {
+        if (Canvas.keyboardKeyState(KeyEvent.VK_RIGHT) && (pageRule < 8)) {
             pageRule++;
             //Tam nghi
             try {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {
+            }
+        }
+        if (Canvas.mouseButtonState(1)) {
+            if (new Rectangle(0, 0, btn_back.getWidth(), btn_back.getHeight()).contains(mousePosition())) {
+                gameState = preState;
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                }
+            }
+            if ((new Rectangle(10, frameHeight - btn_previous.getHeight() - 10, btn_previous.getWidth(), btn_previous.getHeight()).contains(mousePosition()))
+                    && (pageRule > 1)) {
+                pageRule--;
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                }
+            }
+            if ((new Rectangle(frameWidth - btn_next.getWidth() - 10, frameHeight - btn_next.getHeight() - 10, btn_next.getWidth(), btn_next.getHeight()).contains(mousePosition()))
+                    && (pageRule < 8)) {
+                pageRule++;
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                }
+            }
+        }
+    }
+
+    private void option() {
+        if (Canvas.mouseButtonState(1)) {
+            if (new Rectangle(0, 0, btn_back.getWidth(), btn_back.getHeight()).contains(mousePosition())) {
+                gameState = GameState.MAIN_MENU;
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                }
+            }
+            if (new Rectangle((frameWidth + sound_option.getWidth()) / 2 + 50, (frameHeight - sound_option.getHeight()) / 2 + 27, btn_sound_on.getWidth(), btn_sound_on.getHeight()).contains(mousePosition())) {
+                music_on = !music_on;
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                }
             }
         }
     }
@@ -410,6 +526,7 @@ public class Framework extends Canvas {
             }
 
             if (new Rectangle(550, 480, 205, 90).contains(mousePosition())) {
+                Game.INGAME.stop();
                 gameState = GameState.MAIN_MENU;
                 try {
                     //Provides the necessary delay and also yields control so that other thread can do work.

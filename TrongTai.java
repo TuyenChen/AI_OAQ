@@ -38,6 +38,8 @@ class TrongTai {
     int state;
     boolean eating = false;
     int count = 0; // bien dem de ve ban tay
+    int countAn = 0;
+    int thaoTacAn = 0;
     int thaoTacLay = 0; // dem lay quan
     boolean thaoTacTha = false;
     // Short Link
@@ -89,14 +91,14 @@ class TrongTai {
             return;
         }
 
-        if (this.count < NUMBER_IMAGE && this.state != KIEM_TRA && !(this.state == DI && this.thaoTacTha)) {
+        if (this.count < NUMBER_IMAGE && this.state != KIEM_TRA && !(this.state == DI && this.thaoTacTha) && this.thaoTacAn != 1 && this.thaoTacAn != 2) {
             tangToaDo();
             return;
         }
         this.count = 0;
 
         try {
-            Thread.sleep(0);
+            Thread.sleep(300);
         } catch (Exception e) {
         }
         // kiem tra trang thai cua trong tai
@@ -131,6 +133,16 @@ class TrongTai {
                 break;
 
             case AN:
+                if (this.countAn != 1) {
+                    this.countAn ++;
+                    return;
+                }
+                if (this.thaoTacAn != 2) {
+                    this.thaoTacAn++;
+                    return;
+                }
+                this.thaoTacAn = 0;
+                this.countAn = 0;
                 An(buocDi, this.selected);
                 chuyenNhaKe(direction);
                 this.eating = true;
@@ -167,6 +179,7 @@ class TrongTai {
                     // Truong hop An
                     case 2:
                         chuyenNhaKe(direction);
+                        this.eating = true;
                         this.state = AN;
                         break;
 
@@ -353,13 +366,16 @@ class TrongTai {
         int checked;
         // vao o quan
         if (current == 0 || current == 6) {
-            checked = tangNhaKe(direction, current);
-            if (checkEmpty(checked)) {
-                int checked_next = tangNhaKe(direction, checked);
-                if (checkEmpty(checked_next)) {
-                    return 0;
+            if (this.eating) {
+                checked = tangNhaKe(direction, current);
+                if (checkEmpty(checked)) {
+                    int checked_next = tangNhaKe(direction, checked);
+                    if (checkEmpty(checked_next)) {
+                        return 0;
+                    }
+                    return 2;
                 }
-                return 2;
+                return 0;
             }
             return 0;
         }
@@ -396,13 +412,13 @@ class TrongTai {
      */
     public boolean checkEmpty(int current) {
         if (current == 0) {
-            if (q0ShortLink.coQuan || q0ShortLink.getDanSo() != 0) {
+            if (q0ShortLink.coQuan || (q0ShortLink.getDanSo() != 0)) {
                 return false;
             }
             return true;
         }
         if (current == 6) {
-            if (q6ShortLink.coQuan || q6ShortLink.getDanSo() != 0) {
+            if (q6ShortLink.coQuan || (q6ShortLink.getDanSo() != 0)) {
                 return false;
             }
             return true;
@@ -496,12 +512,12 @@ class TrongTai {
         }
         return true;
     }
-    
+
     public void tinhDiem() {
         for (int i = 1; i <= 5; i++) {
             p1ShortLink.soDanAnDuoc += houseShortLink[i].getDanSo();
         }
-        
+
         for (int i = 7; i <= 11; i++) {
             p2ShortLink.soDanAnDuoc += houseShortLink[i].getDanSo();
         }
@@ -562,39 +578,49 @@ class TrongTai {
     public void themDan(Step buocDi) {
         if (nextTurnIsPlayer1(buocDi)) {
 
-            for (int i = 7; i <= 11; i++) {
-                houseShortLink[i].setDanSo(1);
-            }
             // Tru diem cua player
-            if ((p1ShortLink.currentScore < 5 && p1ShortLink.soQuanAnDuoc == 0) || (p2ShortLink.soDanAnDuoc < 5)) {
+            if (p1ShortLink.soDanAnDuoc < 5 && p1ShortLink.soQuanAnDuoc == 0) {
                 this.game.turnToken = 0;
                 return;
-            } else {
+            } else if (p2ShortLink.soDanAnDuoc < 5 && p1ShortLink.soQuanAnDuoc != 0 && p1ShortLink.soDanAnDuoc < 5) {
+                this.game.turnToken = 0;
+                return;
+            } else if (p1ShortLink.soQuanAnDuoc > 0 && p1ShortLink.soDanAnDuoc < 5) {
                 p1ShortLink.soQuanAnDuoc--;
                 p2ShortLink.soQuanAnDuoc++;
                 p2ShortLink.soDanAnDuoc -= 5;
-                p2ShortLink.currentScore += 5;
+//                p2ShortLink.currentScore += 5;
                 p1ShortLink.soDanAnDuoc += 5;
-                p1ShortLink.soDanAnDuoc -= 5;
-                p1ShortLink.currentScore -= 5;
+
+//                p1ShortLink.currentScore -= 5;
+            }
+            p1ShortLink.soDanAnDuoc -= 5;
+
+            for (int i = 7; i <= 11; i++) {
+                houseShortLink[i].setDanSo(1);
             }
 
         } else {
-            for (int i = 1; i <= 5; i++) {
-                houseShortLink[i].setDanSo(1);
-            }
+
             // Tru diem cua player
-            if ((p2ShortLink.currentScore < 5 && p2ShortLink.soQuanAnDuoc == 0) || (p1ShortLink.soDanAnDuoc < 5)) {
+            if (p2ShortLink.soDanAnDuoc < 5 && p2ShortLink.soQuanAnDuoc == 0) {
                 this.game.turnToken = 0;
                 return;
-            } else {
+            } else if (p1ShortLink.soDanAnDuoc < 5 && p2ShortLink.soDanAnDuoc < 5 && p2ShortLink.soQuanAnDuoc != 0) {
+                this.game.turnToken = 0;
+                return;
+            } else if (p2ShortLink.soDanAnDuoc < 5 && p2ShortLink.soQuanAnDuoc != 0) {
                 p2ShortLink.soQuanAnDuoc--;
                 p1ShortLink.soQuanAnDuoc++;
                 p1ShortLink.soDanAnDuoc -= 5;
-                p1ShortLink.currentScore += 5;
+//                p1ShortLink.currentScore += 5;
                 p2ShortLink.soDanAnDuoc += 5;
-                p2ShortLink.soDanAnDuoc -= 5;
-                p2ShortLink.currentScore -= 5;
+
+//                p2ShortLink.currentScore -= 5;
+            }
+            p2ShortLink.soDanAnDuoc -= 5;
+            for (int i = 1; i <= 5; i++) {
+                houseShortLink[i].setDanSo(1);
             }
 
         }
@@ -667,16 +693,26 @@ class TrongTai {
                 this.x += 4;
             } else if (this.selected < 6 && this.selected != 0) {
                 this.x -= 4;
-            } else {
-                if (this.selected == 0) {
+            } else if (this.selected == 0 && !this.eating) {
+                this.y += 4;
+                this.x = game.board.START_X - (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+            } else if (!this.eating && this.selected == 6) {
+                this.y -= 4;
+                this.x = game.board.START_X + 400 + (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+            } else if (this.selected == 0) {
+                if (this.countAn == 0) {
+                    this.x -= 4;
+                } else {
                     this.y += 4;
-                    this.x = game.board.START_X - (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+                    this.x = game.board.START_X - (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
                 }
-                else {
+            } else if (this.selected == 6) {
+                if (this.countAn == 0) {
+                    this.x += 4;
+                } else {
                     this.y -= 4;
-                    this.x = game.board.START_X + 400 + (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+                    this.x = game.board.START_X + 400 + (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
                 }
-//                setToaDo();
             }
         } else {
             this.count++;
@@ -684,16 +720,26 @@ class TrongTai {
                 this.x -= 4;
             } else if (this.selected < 6 && this.selected != 0) {
                 this.x += 4;
-            } else {
-                if (this.selected == 0) {
+            } else if (this.selected == 0 && !this.eating) {
+                this.y -= 4;
+                this.x = game.board.START_X - (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+            } else if (!this.eating && this.selected == 6) {
+                this.y += 4;
+                this.x = game.board.START_X + 400 + (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+            } else if (this.selected == 0) {
+                if (this.countAn == 0) {
+                    this.x -= 4;
+                } else {
                     this.y -= 4;
-                    this.x = game.board.START_X - (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
+                    this.x = game.board.START_X - (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y), 2));
                 }
-                else {
+            } else if (this.selected == 6) {
+                if (this.countAn == 0) {
+                    this.x += 4;
+                } else {
                     this.y += 4;
-                    this.x = game.board.START_X + 400 + (int)Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
+                    this.x = game.board.START_X + 400 + (int) Math.sqrt(100 * 100 - Math.pow((this.y - game.board.START_Y - 102), 2));
                 }
-//                setToaDo();
             }
         }
     }
@@ -720,6 +766,16 @@ class TrongTai {
                 g2d.drawImage(Game.voSoi, this.x, this.y - 50, null);
             } else if (this.thaoTacLay == 2) {
                 g2d.drawImage(Game.choTayXuong, this.x, this.y - 50, null);
+            }
+        } else if (this.state == AN) {
+            if (this.countAn == 1 && this.thaoTacAn != 0) {
+                if (this.thaoTacAn == 1) {
+                    g2d.drawImage(Game.voSoi1, this.x, this.y - 50, null);
+                } else if (this.thaoTacAn == 2) {
+                    g2d.drawImage(Game.voSoi2, this.x, this.y - 40, null);
+                }
+            } else {
+                g2d.drawImage(Game.tayKhong, this.x, this.y - 50, null);
             }
         }
 

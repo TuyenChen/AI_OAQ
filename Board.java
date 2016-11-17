@@ -61,6 +61,20 @@ class Board {
         //Set nha Quan
         q0.setVilla(0, START_X - 100, START_Y, true);
         q6.setVilla(6, START_X + 403, START_Y, true);
+        
+        //Test lỗi
+        houses[1].danSo = 0;
+        houses[2].danSo = 6;
+        houses[3].danSo = 0;
+        houses[4].danSo = 1;
+        houses[5].danSo = 0;
+        houses[7].danSo = 0;
+        houses[8].danSo = 2;
+        houses[9].danSo = 1;
+        houses[10].danSo = 3;
+        houses[11].danSo = 0;
+        q6.danSo = 5;
+        q0.danSo = 5;
     }
 
     //In điểm số
