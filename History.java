@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @author Administrator
  */
 public class History {
-    ArrayList<BoardState> stack;
+    ArrayList<GameState> stack;
     static final int x = 100;
     static final int y = 180;
     static final Shape shape = new Rectangle2D.Double(x, y, 160, 75);
@@ -31,16 +31,18 @@ public class History {
     Player p2ShortLink;
     
     public History(Game game) {
-        this.stack = new ArrayList<BoardState>();
-        BoardState initState = new BoardState();
+        this.stack = new ArrayList<GameState>();
+        GameState initState = new GameState();
         this.stack.add(initState);
         this.game = game;
         houseShortLink = game.board.houses;
         q0ShortLink = game.board.q0;
         q6ShortLink = game.board.q6;
+        p1ShortLink = game.p1;
+        p2ShortLink = game.p2;
     }
     
-    public void add(BoardState state) {
+    public void add(GameState state) {
         stack.add(state);
     }
     
@@ -52,7 +54,7 @@ public class History {
         
         // Check number of instance in history
         // if < 2 return
-        BoardState lastState = null;
+        GameState lastState = null;
         if (stack.size() < 2) {
             game.turnToken = this.preToken;
             this.preToken = 0;
@@ -77,6 +79,12 @@ public class History {
             houseShortLink[i].danSo = lastState.houseSave[i];
         }
         
+        // set diem
+        p1ShortLink.soQuanAnDuoc = lastState.p1Save.soQuanAnDuoc;
+        p1ShortLink.soDanAnDuoc = lastState.p1Save.soDanAnDuoc;
+        p2ShortLink.soQuanAnDuoc = lastState.p2Save.soQuanAnDuoc;
+        p2ShortLink.soDanAnDuoc = lastState.p2Save.soDanAnDuoc;
+
         // set token for player continue playing
         game.turnToken = this.preToken;
         

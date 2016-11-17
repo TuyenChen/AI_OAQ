@@ -107,7 +107,7 @@ class TrongTai {
             case DUNG:
                 this.state = DOI;
                 this.eating = false;
-                game.history.add(new BoardState(game.board, buocDi));
+                game.history.add(new GameState(game, buocDi));
                 System.out.println(game.history.stack.size());
                 setTurnToken(buocDi);
                 if (!checkContinueGame(board)) {
