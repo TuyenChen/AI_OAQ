@@ -108,10 +108,13 @@ public class Player extends JPanel {
             //luot cua p1
             if (playerSide == 2) {
                 
+                // nut Di Lai
                 if (historyShape.contains(mousePosition)) {
                     giveTokenRollBack(game.turnToken);
                     return;
                 }
+                
+                // Chon Nuoc Di
                 for (int i = 1; i <= 5; i++) {
                     if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 1; j <= 5; j++) {
@@ -125,10 +128,14 @@ public class Player extends JPanel {
 
             //Luot cua p2
             if (playerSide == 1) {
+                
+                // Nut Di Lai
                 if (historyShape.contains(mousePosition)) {
                     giveTokenRollBack(game.turnToken);
                     return;
                 }
+                
+                // Chon Nuoc Di
                 for (int i = 7; i <= 11; i++) {
                     if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 7; j <= 11; j++) {

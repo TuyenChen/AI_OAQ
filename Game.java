@@ -277,7 +277,7 @@ public class Game {
         trongTai.paint(g2d);
         g2d.setColor(new Color(51, 153, 153));
         board.paintScore(g2d, p1.soDanAnDuoc, p2.soDanAnDuoc, p1.soQuanAnDuoc, p2.soQuanAnDuoc);
-        history.paint(g2d);
+//        history.paint(g2d);
         {
             g2d.setColor(Color.white);
             g2d.setFont(new Font("SansSerif.bold", Font.BOLD, 40));
