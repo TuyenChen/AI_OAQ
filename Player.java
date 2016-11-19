@@ -2,6 +2,7 @@ package testSQuares2;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Random;
@@ -15,6 +16,7 @@ public class Player extends JPanel {
 
     private Game game;
     private Board board;            //Sân chơi hiện tại của game
+    private Shape historyShape;
     private boolean[] houseCoDan;  //Địa chỉ các nhà dân xem có dân bên trong không (1,2,3,4,5) ||  (10,9,8,7,6)
     static String playerName;
     public int currentScore;    //Điểm của người chơi = so Dân + anQUan*5
@@ -34,6 +36,7 @@ public class Player extends JPanel {
     //Khởi tạo player
     public Player(Game game, String name, int playerSide) {
         this.game = game;
+        this.historyShape = History.shape;
         buocDi = new Step();
         this.playerName = name;
         this.board = game.board;
@@ -104,6 +107,14 @@ public class Player extends JPanel {
 
             //luot cua p1
             if (playerSide == 2) {
+                
+                // nut Di Lai
+                if (historyShape.contains(mousePosition)) {
+                    giveTokenRollBack(game.turnToken);
+                    return;
+                }
+                
+                // Chon Nuoc Di
                 for (int i = 1; i <= 5; i++) {
                     if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 1; j <= 5; j++) {
@@ -117,6 +128,14 @@ public class Player extends JPanel {
 
             //Luot cua p2
             if (playerSide == 1) {
+                
+                // Nut Di Lai
+                if (historyShape.contains(mousePosition)) {
+                    giveTokenRollBack(game.turnToken);
+                    return;
+                }
+                
+                // Chon Nuoc Di
                 for (int i = 7; i <= 11; i++) {
                     if ((board.houses[i].getDanSo() > 0) && (board.houses[i].shape.contains(mousePosition))) {
                         for (int j = 7; j <= 11; j++) {
@@ -217,6 +236,13 @@ public class Player extends JPanel {
         } else {
             game.turnToken = 4;
         }
+    }
+    
+    // Set Token cho history
+    // Token = 5
+    public void giveTokenRollBack(int preToken) {
+        game.history.preToken = preToken;
+        game.turnToken = 7;
     }
 
     //Trả về bước đi

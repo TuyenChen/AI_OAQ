@@ -20,6 +20,7 @@ public class Game {
     public Board board;
     public Player p1, p2;
     public TrongTai trongTai;
+    public History history;
     public int turnToken;  //Dùng để chia lượt
     public int lastToken; //Kiem tra sang luot khac
     private long timeCount;
@@ -32,6 +33,7 @@ public class Game {
     public static BufferedImage houseChosen, houseChosen_Bot, houseChosenp1left, houseChosenp2left, houseChosenp1right, houseChosenp2right;
     public static BufferedImage ava_bot, ava_player, turn_focus;
     public static BufferedImage voSoi, choTayXuong, namTay, tayKhong, voSoi1, voSoi2;
+    public static BufferedImage diLai;
     public static BufferedImage dieuCay, dieuCay1, dieuCay2;
     public static BufferedImage dieuCayGiua[];
     public int index_ani;
@@ -67,6 +69,7 @@ public class Game {
         p2 = new Player(this, "Dung", 2);
 //        p1.soDanAnDuoc = 6;
         trongTai = new TrongTai(this);
+        this.history = new History(this);
         turnToken = 1;
         soils = new BufferedImage[10];
         timeFlag = Framework.gameTime;
@@ -162,6 +165,9 @@ public class Game {
 
             URL voSoi2ImgUrl = this.getClass().getResource("/testsquares2/resources/images/tay/tayvo2.png");
             voSoi2 = ImageIO.read(voSoi2ImgUrl);
+            
+            URL diLaiImgUrl = this.getClass().getResource("/testsquares2/resources/images/DiLai.png");
+            diLai = ImageIO.read(diLaiImgUrl);
 
             URL dieuCay_1ImgUrl = this.getClass().getResource("/testsquares2/resources/images/dieucay/dieucay_1.png");
             dieuCay1 = ImageIO.read(dieuCay_1ImgUrl);
@@ -231,7 +237,9 @@ public class Game {
             case 4:
                 trongTai.handle(p2.getStep());
                 break;
-
+            case 7: 
+                history.Rollback();
+                break;
             case 0:
                 Framework.gameState = Framework.GameState.GAMEOVER;
                 break;
@@ -269,7 +277,7 @@ public class Game {
         trongTai.paint(g2d);
         g2d.setColor(new Color(51, 153, 153));
         board.paintScore(g2d, p1.soDanAnDuoc, p2.soDanAnDuoc, p1.soQuanAnDuoc, p2.soQuanAnDuoc);
-
+//        history.paint(g2d);
         {
             g2d.setColor(Color.white);
             g2d.setFont(new Font("SansSerif.bold", Font.BOLD, 40));
